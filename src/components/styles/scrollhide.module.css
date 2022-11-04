@@ -1,0 +1,14 @@
+.hideScrollbasr::-webkit-scrollbar {
+  display: none;
+}
+
+.hideScrollbasr {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+
+.hideScrollbasr:hover{
+  
+}
