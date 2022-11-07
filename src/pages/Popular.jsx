@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import AllFeature from './../components/AllFeature';
 import ListOfProvider from './../components/ListOfProvider';
-import icon from '../asset/icon.webp';
+
 import Movies from './../components/Movies';
 import styles from '../components/styles/scrollhide.module.css';
+
+import useProvider from './../Axios/useProvider';
 import {
   FaAngleDown,
   FaAngleUp,
@@ -12,12 +14,23 @@ import {
   FaAngleLeft,
 } from 'react-icons/fa';
 const Popular = () => {
-  var maphere = new Array(52).fill(icon);
   const [show, setShow] = useState(true);
+  const { provider } = useProvider();
+  const EXCTRA_IMG__LINK = 'https://image.tmdb.org/t/p/w500/';
+  useEffect(() => {
+    const onScroll = () => {};
+    window.removeEventListener('scroll', onScroll);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
-    <Box pt="4rem" w="91%" m="auto">
-      <Flex justify="space-between">
+    <Box pt={{ base: '7rem', md: '7rem', lg: '7rem', xl: '4rem' }}>
+      <Flex
+        justify="space-between"
+        px={{ base: '4', lg: '4', xl: '4.7rem' }}
+        m="auto"
+      >
         <Text fontSize={'25'}>Welcome to JustWatch Australia</Text>
         {show ? (
           <FaAngleDown onClick={() => setShow(false)} />
@@ -26,7 +39,12 @@ const Popular = () => {
         )}
       </Flex>
 
-      <Box h={show ? '65px' : 'auto'} overflow="hidden" mb="25px">
+      <Box
+        px={{ base: '4', lg: '4', xl: '4.7rem' }}
+        h={show ? '65px' : 'auto'}
+        overflow="hidden"
+        mb="25px"
+      >
         We are glad you're here! On JustWatch you are able to find out where to
         watch your favorite movies & tv shows in Australia. JustWatch work this
         way: Select your favorite streaming providers in the WatchBar and see
@@ -57,41 +75,62 @@ const Popular = () => {
         that just got released on your favorite providers. Find out more about
         us here.
       </Box>
-
-      <Flex position={'relative'} alignItems="center">
-        <Box {...SliderIcon}>
-          <FaAngleLeft fontSize={25} />
-        </Box>
+      <Box
+        px={{ base: '4', lg: '4', xl: '4rem' }}
+        position="sticky"
+        top={{ base: '6rem', lg: '4', xl: '3rem' }}
+        backdropFilter="auto"
+        backdropBlur="14px"
+        zIndex={'105'}
+        pb={'15px'}
+        pt={'15px'}
+      >
         <Flex
-          gap={2}
-          style={ScrollHidden}
-          className={styles.hideScrollbasr}
-          // boxShadow={show ? '2px -11px 28px 1px black' : '1px'}
-          position="relative"
-          p="8px 0"
+          position={'relative'}
+          alignItems="center"
+          mb="2"
+          onMouseEnter={() => {
+            const show = document.querySelectorAll('.arrowShow');
+            show[0].style.display = 'block';
+            show[1].style.display = 'block';
+          }}
+          onMouseLeave={() => {
+            const show = document.querySelectorAll('.arrowShow');
+            show[0].style.display = 'none';
+            show[1].style.display = 'none';
+          }}
         >
-          {maphere?.map((el, index) => (
-            <ListOfProvider key={index} icon={el} />
-          ))}
+          <Box {...SliderIcon} className={'arrowShow'}>
+            <FaAngleLeft fontSize={25} />
+          </Box>
+          <Flex
+            gap={2}
+            className={styles.hideScrollbasr}
+            h="4rem"
+            position="relative"
+            p="8px 0"
+          >
+            {provider?.map((el, index) => (
+              <ListOfProvider
+                key={index}
+                icon={EXCTRA_IMG__LINK + el.logo_path}
+              />
+            ))}
+          </Flex>
+          <Box {...SliderIcon} right={0} className={'arrowShow'}>
+            <FaAngleRight fontSize={25} />
+          </Box>
         </Flex>
-        <Box {...SliderIcon} right={0}>
-          <FaAngleRight fontSize={25} />
-        </Box>
-      </Flex>
-
-      <AllFeature />
-      <Movies />
+        <AllFeature />
+      </Box>
+      <Box px={{ base: '4', lg: '4', xl: '4rem' }}>
+        <Movies />
+      </Box>
     </Box>
   );
 };
 
 export default Popular;
-
-const ScrollHidden = {
-  overflow: 'scroll',
-  msoverflowstyle: 'none',
-  scrollbarwidth: 'none',
-};
 
 const SliderIcon = {
   position: 'absolute',
@@ -99,4 +138,5 @@ const SliderIcon = {
   h: '100%',
   zIndex: 1,
   pt: 4,
+  display: 'none',
 };

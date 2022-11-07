@@ -1,9 +1,10 @@
-import { Box, Image, Text, Flex } from '@chakra-ui/react';
+import { Box, Image, Text, Flex, VStack, Grid } from '@chakra-ui/react';
 import poster from '../asset/the-white-lotus (1).webp';
-import { FaBookmark } from 'react-icons/fa';
+import { FaBookmark, FaPlayCircle } from 'react-icons/fa';
 
-const Season = () => {
+const Season = ({ video, setCurrentVideo, setShow }) => {
   var arr = [1, 2];
+
   return (
     <Box pt="3">
       <Text>2 SEASONS</Text>
@@ -23,6 +24,32 @@ const Season = () => {
           </Box>
         ))}
       </Flex>
+      <Grid gap={5} p="15px 0">
+        {video?.map((el, index) => (
+          <Flex
+            border="1px solid red"
+            p={2}
+            gap={5}
+            alignItems="center"
+            key={index}
+            cursor="pointer"
+            onClick={() => {
+              setCurrentVideo(index);
+              setShow(true);
+            }}
+          >
+            <FaPlayCircle />
+            <Text
+              // w="80%"
+              // textOverflow="ellipsis"
+              // overflow="hidden"
+              // whiteSpace="nowrap"
+            >
+              {el.name}
+            </Text>
+          </Flex>
+        ))}
+      </Grid>
     </Box>
   );
 };

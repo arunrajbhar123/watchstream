@@ -43,9 +43,6 @@ const TextOritation = {
   height: '7rem',
   textAlign: 'center',
   writingMmode: 'tb-rl',
-  webkitTransform: 'rotate(180deg)',
-  mozTransform: 'rotate(180deg)',
-  oTransform: 'rotate(180deg)',
-  msTransform: 'rotate(180deg)',
-  transform: 'rotate(180deg)',
+  WebkitTransform: 'rotate(180deg)',
+  
 };

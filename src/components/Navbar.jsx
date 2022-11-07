@@ -1,10 +1,9 @@
-import { ReactNode } from 'react';
+import { ReactNode, useContext } from 'react';
 import {
   Box,
   Flex,
   Avatar,
   HStack,
-  Link,
   IconButton,
   Button,
   Menu,
@@ -24,12 +23,9 @@ import { Logo } from './Footer';
 import { FaUserCog } from 'react-icons/fa';
 import Searchbox from './Searchbox';
 import MainRoute from './../pages/MainRoute';
-const Links = [
-  { text: 'Home', link: '' },
-  { text: 'New', link: 'new' },
-  { text: 'Popular', link: 'au' },
-  { text: 'WatchList', link: 'watchlist' },
-];
+import { Link } from 'react-router-dom';
+import { MovieContext } from './../context api/ContextProvider';
+import useCountry from './../Axios/useCountry';
 
 const NavLink = ({ text, link }) => (
   <Link
@@ -38,35 +34,42 @@ const NavLink = ({ text, link }) => (
     rounded={'md'}
     _hover={{
       textDecoration: 'none',
-
       bg: useColorModeValue('gray.200', 'gray.700'),
     }}
-    href={link}
+    to={`/${link}`}
+    // display={text === 'Home' ? { md: 'none' } : null}
   >
-    {text}
+    {text !== 'Home' && text !== 'WatchList' ? text : null}
   </Link>
 );
 
 export default function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const { country } = useContext(MovieContext);
+  // const loadfirst=useCountry()
+  const Links = [
+    { text: 'Home', link: '' },
+    { text: 'New', link: 'new' },
+    { text: 'Popular', link: country },
+    { text: 'WatchList', link: 'watchlist' },
+  ];
   return (
     <>
       <Box
-        px={4}
+        px={{ base: '4', lg: '4', xl: '4.7rem' }}
         position={'fixed'}
         w={'100%'}
         backdropFilter="auto"
-        backdropBlur="12px"
-        maxWidth={1630}
-        zIndex="1000"
+        backdropBlur="14px"
+        // maxWidth={1630}
+        zIndex="200"
       >
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
             size={'md'}
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
             aria-label={'Open Menu'}
-            display={{ md: 'none' }}
+            display={{ base: 'none', md: 'block', xl: 'none' }}
             bg={'none'}
             onClick={isOpen ? onClose : onOpen}
           />
@@ -74,18 +77,18 @@ export default function Navbar() {
             <Box>
               <Logo />
             </Box>
-            <HStack
-              as={'nav'}
-              spacing={4}
-              display={{ base: 'none', md: 'flex' }}
-            >
-              {Links.map((el, index) => (
-                <NavLink key={index} {...el} />
-              ))}
-            </HStack>
+            <Flex display={{ base: 'none', md: 'none', xl: 'flex' }}>
+              <HStack as={'nav'} spacing={4}>
+                {Links.map((el, index) => (
+                  <NavLink key={index} {...el} />
+                ))}
+              </HStack>
+              <Box w="100%">
+                <Searchbox />
+              </Box>
+            </Flex>
           </HStack>
           <Flex alignItems={'center'}>
-            <Searchbox />
             <ColorModeSwitcher />
 
             <Menu>
@@ -111,17 +114,37 @@ export default function Navbar() {
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
-              {Links.map(link => (
-                <NavLink key={link}>{link}</NavLink>
+              {Links.map(el => (
+                <NavLink key={el} {...el} />
               ))}
             </Stack>
           </Box>
         ) : null}
+        <Flex
+          alignItems="center"
+          pb={'2'}
+          display={{
+            base: 'flex',
+            md: 'flex',
+            xl: 'none',
+          }}
+          justify="space-between"
+          gap={4}
+        >
+          <HStack as={'nav'}>
+            {Links.map((el, index) => (
+              <NavLink key={index} {...el} />
+            ))}
+          </HStack>
+          <Box w="100%">
+            <Searchbox />
+          </Box>
+        </Flex>
       </Box>
 
       <Box pt={0}>
         <MainRoute />
-        <Footer />
+        {/* <Footer /> */}
       </Box>
     </>
   );

@@ -13,7 +13,7 @@ const Sorting = () => {
   });
   return (
     <Box>
-      <Flex gap={2}>
+      <Flex gap={6} fontSize={'17'} alignItems="center">
         <Flex cursor="text" alignItems="center">
           <HiFilter fontSize={19} />
           <Text>Filters</Text>

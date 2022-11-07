@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
-
+import { MovieContextProvider } from './context api/ContextProvider';
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
 const colors = {
@@ -15,13 +15,22 @@ const colors = {
   },
 };
 
-const theme = extendTheme({ colors });
+const breakpoints = {
+  sm: '375px',
+  md: '425px',
+  lg: '768px',
+  xl: '1024px',
+  '2xl': '1226px',
+};
+const theme = extendTheme({ colors, breakpoints });
 root.render(
   <BrowserRouter>
-    <ChakraProvider theme={theme}>
-      <ColorModeScript />
-      <App />
-    </ChakraProvider>
+    <MovieContextProvider>
+      <ChakraProvider theme={theme}>
+        <ColorModeScript />
+        <App />
+      </ChakraProvider>
+    </MovieContextProvider>
   </BrowserRouter>
 );
 
