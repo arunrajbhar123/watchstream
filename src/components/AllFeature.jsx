@@ -1,17 +1,19 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Box, Flex, Text, Slide, useDisclosure } from '@chakra-ui/react';
 import Sorting from './Sorting';
 import { HiFilter } from 'react-icons/hi';
 import Mobilefilter from './Mobilefilter';
-import { MovieContext } from './../context api/ContextProvider';
 import { FaTimes } from 'react-icons/fa';
 const AllFeature = () => {
-  // const {  isOpen,setMobileFilter } = useContext(MovieContext);
   const { isOpen, onToggle } = useDisclosure();
-  console.log(isOpen);
+
   return (
     <Flex justify="space-between" alignItems="center">
-      <Flex gap={4} fontSize={{ base: '17', lg: '22', xl: '22' }} alignItems="center">
+      <Flex
+        gap={4}
+        fontSize={{ base: '17', lg: '22', xl: '22' }}
+        alignItems="center"
+      >
         <Text>All</Text>
         <Text>Movies</Text>
         <Text>TV Shows</Text>
@@ -29,17 +31,9 @@ const AllFeature = () => {
         </Box>
       </Flex>
 
-      <Box
-      // ml={mobileFilter ? '0rem' : '-52rem'}
-      // display={mobileFilter ? 'block' : 'none'}
-      >
-        <Slide direction="left" in={isOpen} style={{ zIndex: 10 }}
-
-        >
-          <Mobilefilter
-            show={onToggle}
-
-          />
+      <Box>
+        <Slide direction="left" in={isOpen} style={{ zIndex: 10 }}>
+          <Mobilefilter show={onToggle} />
         </Slide>
       </Box>
 

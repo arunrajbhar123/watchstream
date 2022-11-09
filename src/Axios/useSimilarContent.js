@@ -8,12 +8,12 @@ const useSimilarContent = movie_id => {
   useEffect(() => {
     axios
       .get(
-        `https://api.themoviedb.org/3/movie/${movie_id}/similar?api_key=${process.env.REACT_APP_KEY}&language=en-US`
+        `https://api.themoviedb.org/3/movie/${movie_id}/recommendations?api_key=${process.env.REACT_APP_KEY}&language=en-US`
       )
       .then(res => {
         setSimilarContent(res.data.results);
       });
-  }, [ movie_id]);
+  }, [movie_id]);
 
   return { similarContent };
 };

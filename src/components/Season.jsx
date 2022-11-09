@@ -1,10 +1,11 @@
-import { Box, Image, Text, Flex, VStack, Grid } from '@chakra-ui/react';
+import { Box, Image, Text, Flex, VStack, Grid, Button } from '@chakra-ui/react';
 import poster from '../asset/the-white-lotus (1).webp';
-import { FaBookmark, FaPlayCircle } from 'react-icons/fa';
-
-const Season = ({ video, setCurrentVideo, setShow }) => {
+import { FaBookmark, FaPlayCircle, FaPauseCircle } from 'react-icons/fa';
+import { useState } from 'react';
+const Season = ({ currentVideo, video, setCurrentVideo, setShow }) => {
   var arr = [1, 2];
-
+  const [mapOnly, setMapOnly] = useState(4);
+  const [toggle, setToggle] = useState(false);
   return (
     <Box pt="3">
       <Text>2 SEASONS</Text>
@@ -25,30 +26,50 @@ const Season = ({ video, setCurrentVideo, setShow }) => {
         ))}
       </Flex>
       <Grid gap={5} p="15px 0">
-        {video?.map((el, index) => (
-          <Flex
-            border="1px solid red"
-            p={2}
-            gap={5}
-            alignItems="center"
-            key={index}
-            cursor="pointer"
+        {video?.map((el, index) => {
+          if (index < mapOnly) {
+            return (
+              <Flex
+                border={currentVideo === index ? '1px solid red' : 'none'}
+                p={2}
+                gap={5}
+                alignItems="center"
+                key={index}
+                cursor="pointer"
+                rounded={6}
+                onClick={() => {
+                  setCurrentVideo(index);
+                  document.body.scrollTop = 0;
+                  document.documentElement.scrollTop = 0;
+                  setShow(true);
+                }}
+              >
+                {currentVideo === index ? <FaPauseCircle /> : <FaPlayCircle />}
+
+                <Text>{el.name}</Text>
+              </Flex>
+            );
+          }
+        })}
+        {toggle ? (
+          <Button
             onClick={() => {
-              setCurrentVideo(index);
-              setShow(true);
+              setMapOnly(4);
+              setToggle(false);
             }}
           >
-            <FaPlayCircle />
-            <Text
-              // w="80%"
-              // textOverflow="ellipsis"
-              // overflow="hidden"
-              // whiteSpace="nowrap"
-            >
-              {el.name}
-            </Text>
-          </Flex>
-        ))}
+            Less Video Watch
+          </Button>
+        ) : (
+          <Button
+            onClick={() => {
+              setMapOnly(video.length);
+              setToggle(true);
+            }}
+          >
+            Watch All Videos
+          </Button>
+        )}
       </Grid>
     </Box>
   );

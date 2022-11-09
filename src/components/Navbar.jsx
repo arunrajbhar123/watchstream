@@ -61,8 +61,7 @@ export default function Navbar() {
         w={'100%'}
         backdropFilter="auto"
         backdropBlur="14px"
-        // maxWidth={1630}
-        zIndex="200"
+        zIndex="160"
       >
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
@@ -136,7 +135,7 @@ export default function Navbar() {
               <NavLink key={index} {...el} />
             ))}
           </HStack>
-          <Box w="100%">
+          <Box>
             <Searchbox />
           </Box>
         </Flex>

@@ -78,7 +78,7 @@ const Popular = () => {
       <Box
         px={{ base: '4', lg: '4', xl: '4rem' }}
         position="sticky"
-        top={{ base: '6rem', lg: '4', xl: '3rem' }}
+        top={{ base: '6rem', lg: '6rem', xl: '3rem' }}
         backdropFilter="auto"
         backdropBlur="14px"
         zIndex={'105'}

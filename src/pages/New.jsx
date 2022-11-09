@@ -1,6 +1,9 @@
 import React from 'react';
 import { Box } from '@chakra-ui/react';
 import Loader from './../components/Loader';
+import Years from './../components/filter type/Years';
+
+
 
 const New = () => {
   return (
@@ -10,6 +13,8 @@ const New = () => {
     >
       fdd
       <Loader />
+      <Years/>
+      
     </Box>
   );
 };

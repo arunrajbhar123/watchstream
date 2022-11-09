@@ -13,40 +13,45 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { SearchIcon, CloseIcon } from '@chakra-ui/icons';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { FaAngleDoubleRight } from 'react-icons/fa';
 import useSearch from './../Axios/useSearch';
 import { useNavigate } from 'react-router-dom';
+import { MovieContext } from './../context api/ContextProvider';
 
 const Searchbox = () => {
   const [text, setText] = useState('');
   const [query, setQuery] = useState('');
   const { search } = useSearch(query);
-  const [toggle, setToggle] = useState(false);
   const EXCTRA_IMG_LINK = 'https://image.tmdb.org/t/p/w500/';
   const navigate = useNavigate();
+  const { overlay, handleOverlay } = useContext(MovieContext);
+
   const handleClearAll = () => {
     let container = document.querySelector('.clearAll');
     container.style.display = 'none';
   };
 
   useEffect(
-    (delay = 5000) => {
+    (delay = 2000) => {
       var id;
 
       id = setTimeout(function () {
         if (id) {
           clearTimeout(id);
         }
+
         setQuery(text);
       }, delay);
+      return () => clearTimeout(id);
     },
+
     [text]
   );
 
   return (
     <Box>
-      <InputGroup position={'relative'} zIndex={'1000'}>
+      <InputGroup>
         <InputLeftElement
           pointerEvents="none"
           children={<SearchIcon color="gray.300" />}
@@ -62,19 +67,21 @@ const Searchbox = () => {
           type="text"
           placeholder="Search for movies or TV shows "
           value={text}
-          w={{ base: '100%', md: '100%', lg: '100%', xl: '56rem' }}
+          w={{ base: '100%', md: '100%', lg: '66rem', xl: '56rem' }}
           focusBorderColor={'none'}
-          onChange={e => setText(e.target.value)}
-          onClick={() => {
-            // if (!toggle) {
-            setToggle(!toggle);
-            // }
+          onChange={e => {
+            setText(e.target.value);
+          }}
+          onClick={e => {
+            setTimeout(() => {
+              handleOverlay(true);
+            }, 10);
           }}
         />
         <Box
           zIndex={'107'}
           position={'absolute'}
-          display={toggle ? 'block' : 'none'}
+          display={overlay ? 'block' : 'none'}
           top={'2.5rem'}
           boxShadow="dark-lg"
           p="6"
@@ -108,7 +115,6 @@ const Searchbox = () => {
                             alignItems="center"
                             onClick={() => {
                               navigate(`/au/${el.title}/${el?.id}`);
-                              setToggle(!toggle);
                             }}
                           >
                             <Box w="3rem">
@@ -116,13 +122,13 @@ const Searchbox = () => {
                                 rounded={5}
                                 src={EXCTRA_IMG_LINK + el.poster_path}
                                 alt={`${
-                                  el.original_title.split(' ')[0]
+                                  el.original_title?.split(' ')[0]
                                 }_poster`}
                               />
                             </Box>
                             <Box>
                               <Text fontSize={20}>{el.title}</Text>
-                              <Text>{el.release_date?.split('-')[0]}</Text>
+                              <Text>{el?.release_date?.split('-')[0]}</Text>
                             </Box>
                           </Flex>
                         ) : null}
@@ -151,7 +157,6 @@ const Searchbox = () => {
                             alignItems="center"
                             onClick={() => {
                               navigate(`/au/${el.title}/${el?.id}`);
-                              setToggle(!toggle);
                             }}
                           >
                             <Box w="3rem">

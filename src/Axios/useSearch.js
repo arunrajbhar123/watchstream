@@ -9,7 +9,7 @@ const useSearch = query => {
     if (query !== '') {
       axios
         .get(
-          `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_KEY}&language=en-US&query=${query}&page=1&include_adult=true`
+          `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_KEY}&language=en-US&query=${query}&page=1&include_adult=true&`
         )
         .then(res => {
           setSearch(res.data.results);

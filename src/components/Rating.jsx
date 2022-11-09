@@ -1,40 +1,22 @@
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-} from '@chakra-ui/react';
-const Rating = () => {
+import { Flex, Grid, Text } from '@chakra-ui/react';
+const Rating = ({ data }) => {
   return (
-    <TableContainer>
-      <Table colorScheme={'blackAlpha'}>
-        <Tbody>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-          </Tr>
-          <Tr>
-            <Td>feet</Td>
-            <Td>centimetres (cm)</Td>
-          </Tr>
-          <Tr>
-            <Td>yards</Td>
-            <Td>metres (m)</Td>
-          </Tr>
-        </Tbody>
-        <Tfoot>
-          <Tr>
-            <Th>To convert</Th>
-            <Th>into</Th>
-          </Tr>
-        </Tfoot>
-      </Table>
-    </TableContainer>
+    <Flex gap={14} py={6}>
+      <Grid gap={2}>
+        <Text>RATING</Text>
+        <Text>GENRES</Text>
+        <Text>RUNTIME</Text>
+        <Text>AGE RATING</Text>
+        <Text>DIRECTOR</Text>
+      </Grid>
+      <Grid gap={2}>
+        <Text>{data.vote_average}</Text>
+        <Text>{data.vote_average}</Text>
+        <Text>{data.vote_average}</Text>
+        <Text>{data.vote_average}</Text>
+        <Text>{data.vote_average}</Text>
+      </Grid>
+    </Flex>
   );
 };
 export default Rating;

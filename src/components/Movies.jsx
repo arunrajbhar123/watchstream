@@ -9,39 +9,33 @@ import Loader from './Loader';
 
 const Movies = () => {
   const [url, setUrl] = useState('https://api.themoviedb.org/3/movie/popular');
-  const { page, handlePage, data, country } = useContext(MovieContext);
+  const { page, handlePage, data, country, handleMultiOverlay, multiOverlay } =
+    useContext(MovieContext);
   const { total } = useFetch(page, url);
 
   const navigate = useNavigate();
-  const [show, setShow] = useState({ content: false });
-  const [content, setContent] = useState('popular');
+  const [contentShow, setContentShow] = useState('Popular');
 
-  const [height, setHeight] = useState(window.pageYOffset);
   const EXCTRA_IMG__LINK = 'https://image.tmdb.org/t/p/w500/';
-
+  const content = [
+    { text: 'Popular', link: 'popular' },
+    { text: 'Upcoming', link: 'upcoming' },
+    { text: 'Top Rated', link: 'top_rated' },
+  ];
   useEffect(() => {
-    var interval;
-
     const onScroll = () => {
-      if (interval) {
-        clearTimeout(interval);
-      }
-      if (height < window.pageYOffset) {
-        interval = setTimeout(() => {
-          handlePage();
-        }, 2000);
-        setHeight(window.pageYOffset);
+      if (
+        Math.floor(window.innerHeight + document.documentElement.scrollTop) +
+          3 >=
+        Math.floor(document.documentElement.offsetHeight)
+      ) {
+        handlePage();
       }
     };
-
     window.removeEventListener('scroll', onScroll);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, [height]);
-
-  useEffect(() => {
-    const dsa = document.querySelector('.appned')?.lastChild;
-  }, []);
+  }, [handlePage]);
 
   return (
     <Box>
@@ -49,23 +43,40 @@ const Movies = () => {
         <Text> {total?.toLocaleString('en-US')} title</Text>
         <Box
           onClick={e => {
-            setShow({ ...show, ['content']: true });
+            handleMultiOverlay({ popContent: true });
           }}
         >
-          sorted by {content}
+          sorted by {contentShow}
         </Box>
         <FaAngleDown />
         <Box
           w="250px"
-          h="350px"
           bg="#111"
           position="absolute"
           m="auto"
           top="8"
           left="14rem"
-          zIndex="12"
-          display={show.content ? 'block' : 'none'}
-        ></Box>
+          zIndex="160"
+          display={multiOverlay.popContent ? 'block' : 'none'}
+          px={5}
+          p={2}
+        >
+          {content?.map((el, index) => (
+            <Box
+              key={index}
+              bg="red"
+              m={2}
+              p={2}
+              onClick={() => {
+                navigate(`/au?${el.link}`);
+                handleMultiOverlay({ popContent: false });
+                setContentShow(el.text);
+              }}
+            >
+              {el.text}
+            </Box>
+          ))}
+        </Box>
       </Flex>
       <Grid
         gap={3}

@@ -1,4 +1,4 @@
-import { Box, useColorModeValue, Flex, Text } from '@chakra-ui/react';
+import { Box, useColorModeValue, Flex, Text, Image } from '@chakra-ui/react';
 import { FaShareAlt, FaPlay } from 'react-icons/fa';
 import Season from './../components/Season';
 import Poster from './../components/Poster';
@@ -31,8 +31,6 @@ const Moviedetails = () => {
   }, [parmas?.id]);
   useEffect(() => {
     if (show) {
-      document.body.scrollTop = 0;
-      document.documentElement.scrollTop = 0;
       setAutoPlayQuery('?rel=0&autoplay=1');
     } else {
       setAutoPlayQuery('?rel=0&autoplay=0');
@@ -70,7 +68,7 @@ const Moviedetails = () => {
           zIndex={106}
         >
           <iframe
-            width="77.8%"
+            width="76.9%"
             // height={{ base: '7rem', md: '7rem', lg: '7rem', xl: '8rem' }}
             height="375px"
             style={{ margin: 'auto' }}
@@ -110,9 +108,16 @@ const Moviedetails = () => {
         p={7}
       >
         <Flex gap="7">
-          <Box style={{ width: '33rem', height: '31rem' }}>
+          <Box
+            style={{ width: '33rem', height: '31rem' }}
+            display={{ base: 'none', md: 'none', lg: 'block', xl: 'block' }}
+          >
             <Box position="relative">
-              <img src={EXCTRA_IMG__LINK + data?.poster_path} alt="poster" />
+              <Image src={EXCTRA_IMG__LINK + data?.poster_path} alt="poster" 
+           rounded={5}
+           w="100%"
+           h="31rem"
+              />
               <Box position="absolute" bottom="2" right="2">
                 <Text bg="#111" color="#fff" p="0 5px">
                   TV
@@ -121,11 +126,13 @@ const Moviedetails = () => {
             </Box>
             <Box
               display={{ base: 'none', md: 'none', lg: 'block', xl: 'block' }}
-
-              // display={['none', 'none', 'none']}
             >
               <Poster />
-              <Rating />
+              <Box
+                display={{ base: 'none', md: 'none', lg: 'none', xl: 'block' }}
+              >
+                <Rating data={data} />
+              </Box>
             </Box>
           </Box>
           <Box w="100%">
@@ -143,6 +150,7 @@ const Moviedetails = () => {
             </Flex>
             <Season
               video={video}
+              currentVideo={currentVideo}
               setCurrentVideo={setCurrentVideo}
               setShow={setShow}
             />
