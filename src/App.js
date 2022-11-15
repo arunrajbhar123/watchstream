@@ -8,11 +8,10 @@ function App() {
   const {
     overlay,
     handleOverlay,
-
     handleMultiOverlay,
     multiOverlay,
   } = useContext(MovieContext);
-  console.log(multiOverlay);
+
   return (
     <ChakraProvider theme={theme}>
       <Box

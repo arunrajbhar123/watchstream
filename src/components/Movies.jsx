@@ -1,35 +1,59 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Box, Text, Grid, Image, Flex } from '@chakra-ui/react';
 import { FaBookmark } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FaAngleDown } from 'react-icons/fa';
 import { MovieContext } from './../context api/ContextProvider';
-import useFetch from './../Axios/useFetch';
+
 import Loader from './Loader';
+import useFetch from './../api call/useFetch';
 
 const Movies = () => {
-  const [url, setUrl] = useState('https://api.themoviedb.org/3/movie/popular');
-  const { page, handlePage, data, country, handleMultiOverlay, multiOverlay } =
-    useContext(MovieContext);
-  const { total } = useFetch(page, url);
+  const {
+    urlPopular,
+    handlePage,
+    data,
+    country,
+    handleMultiOverlay,
+    multiOverlay,
+    handleChangeUrl,
+    setPage,
+    setData,
+    totalTitle,
+  } = useContext(MovieContext);
+  const location = useLocation();
 
   const navigate = useNavigate();
   const [contentShow, setContentShow] = useState('Popular');
-
+  const { dsa } = useFetch(urlPopular);
   const EXCTRA_IMG__LINK = 'https://image.tmdb.org/t/p/w500/';
   const content = [
-    { text: 'Popular', link: 'popular' },
-    { text: 'Upcoming', link: 'upcoming' },
-    { text: 'Top Rated', link: 'top_rated' },
+    { text: 'Popular', link: 'movie/popular' },
+    { text: 'Upcoming', link: 'movie/upcoming' },
+    { text: 'Top Rated', link: 'movie/top_rated' },
   ];
   useEffect(() => {
+    let c = document.cookie;
+
+    console.log(c);
+  }, []);
+
+  useEffect(() => {
+    handleChangeUrl('movie/popular');
+  }, [handleChangeUrl, location.search]);
+
+  useEffect(() => {
+    var id;
     const onScroll = () => {
       if (
         Math.floor(window.innerHeight + document.documentElement.scrollTop) +
           3 >=
         Math.floor(document.documentElement.offsetHeight)
       ) {
-        handlePage();
+        setTimeout(() => {
+          handlePage();
+        }, 1000);
+        return () => clearTimeout(id);
       }
     };
     window.removeEventListener('scroll', onScroll);
@@ -40,7 +64,7 @@ const Movies = () => {
   return (
     <Box>
       <Flex alignItems="center" gap={2} pb="15px" position="relative">
-        <Text> {total?.toLocaleString('en-US')} title</Text>
+        <Text> {totalTitle?.toLocaleString('en-US')} title</Text>
         <Box
           onClick={e => {
             handleMultiOverlay({ popContent: true });
@@ -68,7 +92,10 @@ const Movies = () => {
               m={2}
               p={2}
               onClick={() => {
-                navigate(`/au?${el.link}`);
+                handleChangeUrl(el.link);
+                setPage(1);
+                setData([]);
+                navigate(`/au?${el.link.split('/')[1]}`);
                 handleMultiOverlay({ popContent: false });
                 setContentShow(el.text);
               }}

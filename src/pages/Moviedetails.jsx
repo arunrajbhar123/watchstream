@@ -4,38 +4,52 @@ import Season from './../components/Season';
 import Poster from './../components/Poster';
 import Rating from './../components/Rating';
 import Filter from './../components/Filter';
-import useMovie from './../Axios/useMovie';
+
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import useVideo from './../Axios/useVideo';
-import useMovieProvider from './../Axios/useMovieProvider';
-import useSimilarContent from './../Axios/useSimilarContent';
-import SimilarContent from './../components/SimilarContent';
+
+import useMovieDetails from './../api call/useMovieDetails';
+import useVideo from './../api call/useVideo';
+import useSimilar from './../api call/useSimilar';
+import Footer from '../components/Footer';
+import { Slider } from './../components/Slider';
 
 const Moviedetails = () => {
   const parmas = useParams();
-  const [reload, setReload] = useState('');
-  const { data } = useMovie(reload);
-  const { video } = useVideo(parmas.id);
+  const { movieData } = useMovieDetails(parmas?.id);
+  const { video } = useVideo(parmas?.id);
+  const { similar } = useSimilar(parmas?.id);
   const [currentVideo, setCurrentVideo] = useState(0);
   const [autoplayQuery, setAutoPlayQuery] = useState('');
-  const { movieProvider } = useMovieProvider(parmas.id);
-  const { similarContent } = useSimilarContent(parmas.id);
-
   const [show, setShow] = useState(false);
   const EXCTRA_IMG__LINK = 'https://image.tmdb.org/t/p/w500/';
 
   useEffect(() => {
-    setReload(parmas.id);
     setShow(false);
   }, [parmas?.id]);
   useEffect(() => {
     if (show) {
-      setAutoPlayQuery('?rel=0&autoplay=1');
+      setAutoPlayQuery('?rel=0&autoplay=1&controls=0&showinfo=0');
     } else {
       setAutoPlayQuery('?rel=0&autoplay=0');
     }
   }, [show]);
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    if (navigator.canShare) {
+      try {
+        await navigator.share({
+          title: 'Images',
+          text: 'Beautiful images',
+          url,
+        });
+      } catch (error) {
+        console.log('err', error.message);
+        // output.textContent = `Error: ${error.message}`;
+      }
+    }
+  };
 
   return (
     <Box pt={{ base: '7rem', md: '7rem', lg: '7rem', xl: '4rem' }}>
@@ -64,13 +78,21 @@ const Moviedetails = () => {
           position="absolute"
           w="100%"
           m="auto"
+          h="auto"
           display={show ? 'block' : 'none'}
           zIndex={106}
         >
           <iframe
-            width="76.9%"
-            // height={{ base: '7rem', md: '7rem', lg: '7rem', xl: '8rem' }}
-            height="375px"
+            width="77.8%"
+            // height={{
+            //   base: '7rem',
+            //   sm: '380px',
+            //   md: '380px',
+            //   lg: '380px',
+            //   xl: '380px',
+            //   '2xl': '380px',
+            // }}
+            height={['395px']}
             style={{ margin: 'auto' }}
             src={`https://www.youtube.com/embed/${video[currentVideo]?.key}${autoplayQuery}`}
             title={video[0]?.name}
@@ -79,8 +101,8 @@ const Moviedetails = () => {
             allowFullScreen
           ></iframe>
         </Box>
-        <img
-          src={EXCTRA_IMG__LINK + data?.backdrop_path}
+        <Image
+          src={EXCTRA_IMG__LINK + movieData?.backdrop_path}
           alt="bg"
           style={{
             width: '100%',
@@ -100,7 +122,7 @@ const Moviedetails = () => {
       </Box>
       <Box
         bg={useColorModeValue('gray.500', 'gray.900')}
-        w={{ base: '100%', md: '100%', lg: '1170px', xl: '1170px' }}
+        w={{ base: '100%', md: '100%', lg: '1170px', xl: '1184px' }}
         position={'relative'}
         m="auto"
         top="-8.3rem"
@@ -108,15 +130,12 @@ const Moviedetails = () => {
         p={7}
       >
         <Flex gap="7">
-          <Box
-            style={{ width: '33rem', height: '31rem' }}
-            display={{ base: 'none', md: 'none', lg: 'block', xl: 'block' }}
-          >
-            <Box position="relative">
-              <Image src={EXCTRA_IMG__LINK + data?.poster_path} alt="poster" 
-           rounded={5}
-           w="100%"
-           h="31rem"
+          <Box display={{ base: 'none', md: 'none', lg: 'block', xl: 'block' }}>
+            <Box position="relative" w="22rem">
+              <Image
+                src={EXCTRA_IMG__LINK + movieData?.poster_path}
+                alt="poster"
+                rounded={5}
               />
               <Box position="absolute" bottom="2" right="2">
                 <Text bg="#111" color="#fff" p="0 5px">
@@ -131,34 +150,37 @@ const Moviedetails = () => {
               <Box
                 display={{ base: 'none', md: 'none', lg: 'none', xl: 'block' }}
               >
-                <Rating data={data} />
+                <Rating data={movieData} />
               </Box>
             </Box>
           </Box>
-          <Box w="100%">
+          <Box>
             <Flex justify="space-between">
               <Box>
                 <Text fontSize="30">
-                  {data.title} ({data.release_date?.split('-')[0]})
+                  {movieData?.title} ({movieData?.release_date?.split('-')[0]})
                 </Text>
               </Box>
 
-              <Box>
+              <Box onClick={() => handleShare()} cursor="pointer">
                 <FaShareAlt fontSize="25" />
                 <Text>share</Text>
               </Box>
             </Flex>
+
             <Season
               video={video}
               currentVideo={currentVideo}
               setCurrentVideo={setCurrentVideo}
               setShow={setShow}
             />
-            <Filter />
-            <SimilarContent similarContent={similarContent} />
+
+            <Filter movieProvider={'movieProvider'} />
+            <Slider data={similar} />
           </Box>
         </Flex>
       </Box>
+      <Footer />
     </Box>
   );
 };

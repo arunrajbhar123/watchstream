@@ -6,7 +6,6 @@ import ListOfProvider from './../components/ListOfProvider';
 import Movies from './../components/Movies';
 import styles from '../components/styles/scrollhide.module.css';
 
-import useProvider from './../Axios/useProvider';
 import {
   FaAngleDown,
   FaAngleUp,
@@ -15,14 +14,9 @@ import {
 } from 'react-icons/fa';
 const Popular = () => {
   const [show, setShow] = useState(true);
-  const { provider } = useProvider();
+
   const EXCTRA_IMG__LINK = 'https://image.tmdb.org/t/p/w500/';
-  useEffect(() => {
-    const onScroll = () => {};
-    window.removeEventListener('scroll', onScroll);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  
 
   return (
     <Box pt={{ base: '7rem', md: '7rem', lg: '7rem', xl: '4rem' }}>
@@ -110,7 +104,7 @@ const Popular = () => {
             position="relative"
             p="8px 0"
           >
-            {provider?.map((el, index) => (
+            {[]?.map((el, index) => (
               <ListOfProvider
                 key={index}
                 icon={EXCTRA_IMG__LINK + el.logo_path}

@@ -11,21 +11,24 @@ import {
   InputRightElement,
   HStack,
   VStack,
+  Grid,
 } from '@chakra-ui/react';
 import { SearchIcon, CloseIcon } from '@chakra-ui/icons';
 import { useState, useEffect, useContext } from 'react';
 import { FaAngleDoubleRight } from 'react-icons/fa';
-import useSearch from './../Axios/useSearch';
 import { useNavigate } from 'react-router-dom';
 import { MovieContext } from './../context api/ContextProvider';
+import useSearch from './../api call/useSearch';
+import Loader from './Loader';
 
 const Searchbox = () => {
   const [text, setText] = useState('');
-  const [query, setQuery] = useState('');
-  const { search } = useSearch(query);
-  const EXCTRA_IMG_LINK = 'https://image.tmdb.org/t/p/w500/';
+  const { overlay, handleOverlay, query, setQuery, EXCTRA_IMG_LINK } =
+    useContext(MovieContext);
+
+  const { searchContent } = useSearch(1);
+
   const navigate = useNavigate();
-  const { overlay, handleOverlay } = useContext(MovieContext);
 
   const handleClearAll = () => {
     let container = document.querySelector('.clearAll');
@@ -33,7 +36,7 @@ const Searchbox = () => {
   };
 
   useEffect(
-    (delay = 2000) => {
+    (delay = 3000) => {
       var id;
 
       id = setTimeout(function () {
@@ -50,8 +53,30 @@ const Searchbox = () => {
   );
 
   return (
-    <Box>
-      <InputGroup>
+    <Box
+      position="relative"
+      style={
+        overlay
+          ? {
+              left: '35px',
+              top: '-12px',
+            }
+          : null
+      }
+    >
+      <InputGroup
+        bg={useColorModeValue('gray.50', 'gray.900')}
+        // w={['18.5rem', '32rem', '40rem', '62rem']}
+        style={
+          overlay
+            ? {
+                position: 'absolute',
+                right: 30,
+                width: '22rem',
+              }
+            : null
+        }
+      >
         <InputLeftElement
           pointerEvents="none"
           children={<SearchIcon color="gray.300" />}
@@ -67,7 +92,6 @@ const Searchbox = () => {
           type="text"
           placeholder="Search for movies or TV shows "
           value={text}
-          w={{ base: '100%', md: '100%', lg: '66rem', xl: '56rem' }}
           focusBorderColor={'none'}
           onChange={e => {
             setText(e.target.value);
@@ -78,28 +102,93 @@ const Searchbox = () => {
             }, 10);
           }}
         />
-        <Box
-          zIndex={'107'}
-          position={'absolute'}
-          display={overlay ? 'block' : 'none'}
-          top={'2.5rem'}
-          boxShadow="dark-lg"
-          p="6"
-          roundedBottomLeft="2xl"
-          roundedBottomRight="2xl"
-          bg={useColorModeValue('gray.50', 'gray.900')}
-          w="100%"
-          h={text !== '' ? '500' : '400'}
-          overflow={'hidden'}
-        >
-          {text ? (
+
+        {searchContent?.length === 0 ? (
+          <Box
+            position={'absolute'}
+            display={overlay ? 'block' : 'none'}
+            top={'2.5rem'}
+            boxShadow="dark-lg"
+            p="6"
+            roundedBottomLeft="2xl"
+            roundedBottomRight="2xl"
+            bg={('gray.50', 'gray.900')}
+            w="100%"
+            h={text !== '' ? '400' : '400'}
+            overflow={'hidden'}
+          >
+            <Text textAlign="center">
+              {text === '' ? (
+                <>
+                  <HStack justifyContent={'space-between'}>
+                    <Text>Recent searches</Text>
+                    <Text color={'blue.400'} onClick={() => handleClearAll()}>
+                      Clear All
+                    </Text>
+                  </HStack>
+                  <Flex mt={5}>
+                    <Box
+                      className="clearAll"
+                      border={'1px solid grey'}
+                      rounded={'2xl'}
+                      p={2}
+                    >
+                      <SearchIcon mr={1} />
+                      prem ratan dhan payo
+                    </Box>
+                  </Flex>
+
+                  <Text mt={5}>Recently visited titles</Text>
+                  <Flex mt={5}>
+                    <Box>
+                      <Image
+                        rounded={'md'}
+                        w={120}
+                        h={150}
+                        src={
+                          'https://media.architecturaldigest.com/photos/57c7003fdc03716f7c8289dd/master/pass/IMG%20Worlds%20of%20Adventure%20-%201.jpg'
+                        }
+                        alt={'photo'}
+                      />
+                    </Box>
+                  </Flex>
+                </>
+              ) : (
+                <Box mt="55">
+                  <Loader />
+                </Box>
+              )}
+            </Text>
+          </Box>
+        ) : (
+          <Box
+            position={'absolute'}
+            display={overlay ? 'block' : 'none'}
+            top={'2.5rem'}
+            boxShadow="dark-lg"
+            p="6"
+            roundedBottomLeft="2xl"
+            roundedBottomRight="2xl"
+            bg={('gray.50', 'gray.900')}
+            w="100%"
+            h={text !== '' ? '500' : '400'}
+            overflow={'hidden'}
+          >
             <>
-              <Flex justifyContent="space-between" gap={8}>
+              <Grid
+                gap={8}
+                templateColumns={{
+                  base: 'repeat(1, 1fr)',
+                  md: 'repeat(1, 1fr)',
+                  lg: 'repeat(2, 1fr)',
+                  xl: 'repeat(2, 1fr)',
+                }}
+              >
                 <Box w="100%">
                   <Text pb={2}>Movies</Text>
                   <hr style={{ height: '15px' }} />
                   <VStack>
-                    {search?.map((el, index) => (
+                    {searchContent?.map((el, index) => (
                       <>
                         {index <= 3 ? (
                           <Flex
@@ -115,6 +204,7 @@ const Searchbox = () => {
                             alignItems="center"
                             onClick={() => {
                               navigate(`/au/${el.title}/${el?.id}`);
+                              handleOverlay(false);
                             }}
                           >
                             <Box w="3rem">
@@ -141,7 +231,7 @@ const Searchbox = () => {
                   <Text pb={2}>Movies</Text>
                   <hr style={{ height: '15px' }} />
                   <VStack>
-                    {search?.map((el, index) => (
+                    {searchContent?.map((el, index) => (
                       <>
                         {index <= 3 ? (
                           <Flex
@@ -157,6 +247,7 @@ const Searchbox = () => {
                             alignItems="center"
                             onClick={() => {
                               navigate(`/au/${el.title}/${el?.id}`);
+                              handleOverlay(false);
                             }}
                           >
                             <Box w="3rem">
@@ -178,58 +269,29 @@ const Searchbox = () => {
                     ))}
                   </VStack>
                 </Box>
-              </Flex>
+              </Grid>
             </>
-          ) : (
-            <>
-              <HStack justifyContent={'space-between'}>
-                <Text>Recent searches</Text>
-                <Text color={'blue.400'} onClick={() => handleClearAll()}>
-                  Clear All
-                </Text>
-              </HStack>
-              <Flex mt={5}>
-                <Box
-                  className="clearAll"
-                  border={'1px solid grey'}
-                  rounded={'2xl'}
-                  p={2}
+
+            {text !== '' ? (
+              <>
+                {' '}
+                <Box p="15px 0">
+                  <hr />
+                </Box>
+                <Flex
+                  justifyContent="center"
+                  alignItems="center"
+                  gap={1}
+                  p={1}
+                  onClick={() => navigate(`/query/${query}`)}
                 >
-                  <SearchIcon mr={1} />
-                  prem ratan dhan payo
-                </Box>
-              </Flex>
-
-              <Text mt={5}>Recently visited titles</Text>
-              <Flex mt={5}>
-                <Box>
-                  <Image
-                    rounded={'md'}
-                    w={120}
-                    h={150}
-                    src={
-                      'https://media.architecturaldigest.com/photos/57c7003fdc03716f7c8289dd/master/pass/IMG%20Worlds%20of%20Adventure%20-%201.jpg'
-                    }
-                    alt={'photo'}
-                  />
-                </Box>
-              </Flex>
-            </>
-          )}
-
-          {text !== '' ? (
-            <>
-              {' '}
-              <Box p="15px 0">
-                <hr />
-              </Box>
-              <Flex justifyContent="center" alignItems="center" gap={1} p={1}>
-                <Text> See all results for a </Text>
-                <FaAngleDoubleRight />
-              </Flex>
-            </>
-          ) : null}
-        </Box>
+                  <Text> See all results for a </Text>
+                  <FaAngleDoubleRight />
+                </Flex>
+              </>
+            ) : null}
+          </Box>
+        )}
       </InputGroup>
     </Box>
   );

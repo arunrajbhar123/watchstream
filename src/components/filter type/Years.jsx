@@ -7,11 +7,8 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { useState } from 'react';
-import useYearBySorting from './../../Axios/useYearBySorting';
 const Years = () => {
   const [sortByYear, setSortByYear] = useState([]);
-  const data = useYearBySorting(sortByYear || '');
-
   return (
     <Box>
       <RangeSlider

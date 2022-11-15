@@ -25,7 +25,6 @@ import Searchbox from './Searchbox';
 import MainRoute from './../pages/MainRoute';
 import { Link } from 'react-router-dom';
 import { MovieContext } from './../context api/ContextProvider';
-import useCountry from './../Axios/useCountry';
 
 const NavLink = ({ text, link }) => (
   <Link
@@ -82,14 +81,11 @@ export default function Navbar() {
                   <NavLink key={index} {...el} />
                 ))}
               </HStack>
-              <Box w="100%">
-                <Searchbox />
-              </Box>
+              <Searchbox />
             </Flex>
           </HStack>
           <Flex alignItems={'center'}>
             <ColorModeSwitcher />
-
             <Menu>
               <MenuButton
                 as={Button}

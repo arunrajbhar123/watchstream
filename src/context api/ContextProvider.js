@@ -3,6 +3,7 @@ export const MovieContext = createContext();
 export const MovieContextProvider = ({ children }) => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
+  const [totalTitle, setTotalTitle] = useState('');
   const [overlay, setOverlay] = useState(false);
   const [country, setCountry] = useState('au');
   const [multiOverlay, setMultiOverlay] = useState({
@@ -10,6 +11,17 @@ export const MovieContextProvider = ({ children }) => {
     year: false,
     popContent: false,
   });
+  const [isLoading, setIsLoading] = useState({
+    movies: false,
+  });
+
+  const [query, setQuery] = useState('');
+
+  const [urlPopular, setUrlPopular] = useState(
+    `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.REACT_APP_KEY}`
+  );
+  const EXCTRA_IMG_LINK = 'https://image.tmdb.org/t/p/w500/';
+
   const handlePage = () => {
     setPage(page + 1);
   };
@@ -28,10 +40,26 @@ export const MovieContextProvider = ({ children }) => {
   const handleMultiOverlay = val => {
     setMultiOverlay(val);
   };
+  const handleChangeUrl = val => {
+    setUrlPopular(
+      `https://api.themoviedb.org/3/${val}?api_key=${process.env.REACT_APP_KEY}`
+    );
+  };
 
   return (
     <MovieContext.Provider
       value={{
+        setQuery,
+        EXCTRA_IMG_LINK,
+        query,
+        totalTitle,
+        setTotalTitle,
+        setPage,
+        setData,
+        handleChangeUrl,
+        isLoading,
+        setIsLoading,
+        urlPopular,
         handleMultiOverlay,
         multiOverlay,
         overlay,
