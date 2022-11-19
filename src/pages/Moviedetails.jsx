@@ -1,4 +1,4 @@
-import { Box, useColorModeValue, Flex, Text, Image } from '@chakra-ui/react';
+import { Box, Grid, Flex, Text, Image } from '@chakra-ui/react';
 import { FaShareAlt, FaPlay } from 'react-icons/fa';
 import Season from './../components/Season';
 import Poster from './../components/Poster';
@@ -13,6 +13,7 @@ import useVideo from './../api call/useVideo';
 import useSimilar from './../api call/useSimilar';
 import Footer from '../components/Footer';
 import { Slider } from './../components/Slider';
+import Loader from './../components/Loader';
 
 const Moviedetails = () => {
   const parmas = useParams();
@@ -23,6 +24,10 @@ const Moviedetails = () => {
   const [autoplayQuery, setAutoPlayQuery] = useState('');
   const [show, setShow] = useState(false);
   const EXCTRA_IMG__LINK = 'https://image.tmdb.org/t/p/w500/';
+  const [isLoaderToggle, setIsLoaderToggle] = useState(true);
+  useEffect(() => {
+    document.documentElement.scrollTop = 0;
+  }, []);
 
   useEffect(() => {
     setShow(false);
@@ -41,24 +46,39 @@ const Moviedetails = () => {
       try {
         await navigator.share({
           title: 'Images',
-          text: 'Beautiful images',
+          text: movieData?.title,
           url,
         });
       } catch (error) {
         console.log('err', error.message);
-        // output.textContent = `Error: ${error.message}`;
       }
     }
   };
 
+  if (movieData?.length !== 0) {
+    setTimeout(() => {
+      setIsLoaderToggle(false);
+    }, 1000);
+  }
+
+  if (isLoaderToggle) {
+    return (
+      <Box
+        pt={{ base: '10rem', md: '10rem', lg: '10rem', xl: '10rem' }}
+        h="100vh"
+      >
+        <Loader />
+      </Box>
+    );
+  }
+
   return (
     <Box pt={{ base: '7rem', md: '7rem', lg: '7rem', xl: '4rem' }}>
-      <Box h="63vh" overflow="hidden">
+      <Box h={['38vh', '', '63vh']} overflow="hidden">
         <Box
           position="absolute"
           w="100%"
-          bg="transparent"
-          h="50vh"
+          h={['25vh', '', '50vh']}
           cursor="pointer"
           display={show ? 'none' : 'block'}
         >
@@ -74,32 +94,26 @@ const Moviedetails = () => {
           </Flex>
         </Box>
 
-        <Box
-          position="absolute"
-          w="100%"
-          m="auto"
-          h="auto"
-          display={show ? 'block' : 'none'}
-          zIndex={106}
-        >
-          <iframe
-            width="77.8%"
-            // height={{
-            //   base: '7rem',
-            //   sm: '380px',
-            //   md: '380px',
-            //   lg: '380px',
-            //   xl: '380px',
-            //   '2xl': '380px',
-            // }}
-            height={['395px']}
-            style={{ margin: 'auto' }}
-            src={`https://www.youtube.com/embed/${video[currentVideo]?.key}${autoplayQuery}`}
-            title={video[0]?.name}
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
+        <Box position="relative">
+          <Box
+            position="absolute"
+            w={['100%', '', '78.6%']}
+            h={['215px', '', '395px']}
+            display={show ? 'block' : 'none'}
+            zIndex={106}
+            left={['0', '', '10.7%']}
+            m="auto"
+          >
+            <iframe
+              width="100%"
+              height="100%"
+              src={`https://www.youtube.com/embed/${video[currentVideo]?.key}${autoplayQuery}`}
+              title={video[0]?.name}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </Box>
         </Box>
         <Image
           src={EXCTRA_IMG__LINK + movieData?.backdrop_path}
@@ -113,34 +127,32 @@ const Moviedetails = () => {
       </Box>
 
       <Box
-        bg={useColorModeValue('gray.500', 'gray.900')}
-        color={useColorModeValue('gray.500', 'gray.900')}
-        boxShadow={'0px -30px 75px 32px black'}
+        color="var(--ion-background-color)"
+        boxShadow={'10px -10px 105px 132px #060d17'}
         position="relative"
       >
         .
       </Box>
       <Box
-        bg={useColorModeValue('gray.500', 'gray.900')}
+        bg="var(--ion-background-color)"
         w={{ base: '100%', md: '100%', lg: '1170px', xl: '1184px' }}
         position={'relative'}
         m="auto"
         top="-8.3rem"
         rounded="xl"
-        p={7}
+        p={[0, 0, 7]}
       >
-        <Flex gap="7">
+        <Flex justifyContent="space-between" gap={5}>
           <Box display={{ base: 'none', md: 'none', lg: 'block', xl: 'block' }}>
             <Box position="relative" w="22rem">
               <Image
                 src={EXCTRA_IMG__LINK + movieData?.poster_path}
                 alt="poster"
-                rounded={5}
+                roundedTopLeft={5}
+                roundedTopRight={5}
               />
               <Box position="absolute" bottom="2" right="2">
-                <Text bg="#111" color="#fff" p="0 5px">
-                  TV
-                </Text>
+                <Text p="0 5px">TV</Text>
               </Box>
             </Box>
             <Box
@@ -154,18 +166,37 @@ const Moviedetails = () => {
               </Box>
             </Box>
           </Box>
-          <Box>
-            <Flex justify="space-between">
+
+          <Box w="100%">
+            <Flex justifyContent="space-between" pt="3" pr="3">
               <Box>
-                <Text fontSize="30">
+                <Text fontSize={['22', '30']}>
                   {movieData?.title} ({movieData?.release_date?.split('-')[0]})
                 </Text>
               </Box>
 
-              <Box onClick={() => handleShare()} cursor="pointer">
-                <FaShareAlt fontSize="25" />
-                <Text>share</Text>
-              </Box>
+              <Flex
+                onClick={() => handleShare()}
+                cursor="pointer"
+                fontSize={['17', '25']}
+                justifyContent="center"
+                alignItems="center"
+                direction="column"
+                color="var(--ion-color-secondary)"
+              >
+                <FaShareAlt />
+                <Text
+                  display={{
+                    base: 'none',
+                    md: 'none',
+                    lg: 'none',
+                    xl: 'block',
+                  }}
+                  fontSize={['12']}
+                >
+                  Share
+                </Text>
+              </Flex>
             </Flex>
 
             <Season
@@ -174,9 +205,13 @@ const Moviedetails = () => {
               setCurrentVideo={setCurrentVideo}
               setShow={setShow}
             />
-
             <Filter movieProvider={'movieProvider'} />
-            <Slider data={similar} />
+
+            <Slider
+              data={similar}
+              setIsLoaderToggle={setIsLoaderToggle}
+              title={movieData?.title?.toUpperCase()}
+            />
           </Box>
         </Flex>
       </Box>

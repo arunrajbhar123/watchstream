@@ -16,7 +16,6 @@ const Popular = () => {
   const [show, setShow] = useState(true);
 
   const EXCTRA_IMG__LINK = 'https://image.tmdb.org/t/p/w500/';
-  
 
   return (
     <Box pt={{ base: '7rem', md: '7rem', lg: '7rem', xl: '4rem' }}>
@@ -24,12 +23,13 @@ const Popular = () => {
         justify="space-between"
         px={{ base: '4', lg: '4', xl: '4.7rem' }}
         m="auto"
+        alignItems="center"
       >
-        <Text fontSize={'25'}>Welcome to JustWatch Australia</Text>
+        <Text fontSize={['12', '25']}>Welcome to JustWatch Australia</Text>
         {show ? (
-          <FaAngleDown onClick={() => setShow(false)} />
+          <FaAngleDown fontSize={'20'} onClick={() => setShow(false)} />
         ) : (
-          <FaAngleUp onClick={() => setShow(true)} />
+          <FaAngleUp fontSize={'20'} onClick={() => setShow(true)} />
         )}
       </Flex>
 
@@ -75,6 +75,7 @@ const Popular = () => {
         top={{ base: '6rem', lg: '6rem', xl: '3rem' }}
         backdropFilter="auto"
         backdropBlur="14px"
+        bg="var(--body-color-trans)"
         zIndex={'105'}
         pb={'15px'}
         pt={'15px'}

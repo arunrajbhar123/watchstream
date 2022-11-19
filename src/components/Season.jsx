@@ -3,8 +3,8 @@ import poster from '../asset/the-white-lotus (1).webp';
 import { FaBookmark, FaPlayCircle, FaPauseCircle } from 'react-icons/fa';
 import { useState } from 'react';
 import styles from '../components/styles/scrollhide.module.css';
+import { Slider } from './Slider';
 const Season = ({ currentVideo, video, setCurrentVideo, setShow }) => {
-  var arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const [mapOnly, setMapOnly] = useState(4);
   const [toggle, setToggle] = useState(false);
   return (
@@ -12,37 +12,27 @@ const Season = ({ currentVideo, video, setCurrentVideo, setShow }) => {
       <Text>2 SEASONS</Text>
 
       <Flex gap={3} className={styles.hideScrollbasr} w="750px">
-        {arr?.length >= 1 &&
-          arr?.map((el, index) => (
-            <Box key={index} mt="2" position="relative" cursor="pointer">
-              <Box position="absolute" left="2">
-                <FaBookmark
-                  color="#848080a6"
-                  fontSize="25"
-                  __hover={{ color: '#fff' }}
-                />
-              </Box>
-
-              <Box w="150px">
-                <Image rounded="5" src={poster} alt="poster" />
-              </Box>
-              <Text p="1">SEASON 1</Text>
-            </Box>
-          ))}
+        <Slider />
       </Flex>
 
-      <Grid gap={5} p="15px 0">
+      <Box p="15px 0">
         {video?.map((el, index) => {
           if (index < mapOnly) {
             return (
               <Flex
-                border={currentVideo === index ? '1px solid red' : 'none'}
+                border={currentVideo === index ? '1px solid grey' : 'none'}
+                color={
+                  currentVideo === index
+                    ? 'white'
+                    : 'var(--ion-color-secondary-tint)'
+                }
                 p={2}
                 gap={5}
                 alignItems="center"
                 key={index}
                 cursor="pointer"
                 rounded={6}
+                mb="5"
                 onClick={() => {
                   setCurrentVideo(index);
                   document.body.scrollTop = 0;
@@ -50,10 +40,17 @@ const Season = ({ currentVideo, video, setCurrentVideo, setShow }) => {
                   setShow(true);
                 }}
               >
-                {currentVideo === index ? <FaPauseCircle /> : <FaPlayCircle />}
+                {currentVideo === index ? (
+                  <Box fontSize={['12', '22']}>
+                    <FaPauseCircle />
+                  </Box>
+                ) : (
+                  <Box fontSize={['12', '22']}>
+                    <FaPlayCircle />
+                  </Box>
+                )}
 
                 <Text
-                  w="600px"
                   whiteSpace="nowrap"
                   overflow="hidden"
                   textOverflow="ellipsis"
@@ -67,6 +64,7 @@ const Season = ({ currentVideo, video, setCurrentVideo, setShow }) => {
         {video?.length > 3 ? (
           toggle ? (
             <Button
+              w="100%"
               onClick={() => {
                 setMapOnly(4);
                 setToggle(false);
@@ -80,12 +78,13 @@ const Season = ({ currentVideo, video, setCurrentVideo, setShow }) => {
                 setMapOnly(video.length);
                 setToggle(true);
               }}
+              w="100%"
             >
               Watch All Videos
             </Button>
           )
         ) : null}
-      </Grid>
+      </Box>
     </Box>
   );
 };

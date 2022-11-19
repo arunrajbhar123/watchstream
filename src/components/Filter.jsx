@@ -12,6 +12,7 @@ import {
   ModalCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
+import styles from './styles/unselectabletext.module.css';
 import { HiFilter } from 'react-icons/hi';
 import Filtericons from './Filtericons';
 import { ChevronDownIcon } from '@chakra-ui/icons';
@@ -20,32 +21,48 @@ const Filter = ({ movieProvider }) => {
 
   return (
     <Box>
-      WATCH NOW
+      <Text
+        color="var(--ion-color-secondary-tint)"
+        className={styles.unselectable}
+      >
+        WATCH NOW
+      </Text>
       <Flex
-        p="3"
+        py="3"
         alignItems="center"
         cursor="pointer"
         justifyContent="space-between"
       >
-        <Flex gap={5}>
+        <Flex
+          gap={5}
+          alignItems="center"
+          color="var(--ion-color-secondary-tint)"
+        >
           <Flex cursor="text" alignItems="center">
             <HiFilter fontSize={19} />
             <Text>Filter</Text>
           </Flex>
-          <Text>Best Price</Text>
+          <Text color="white">Best Price</Text>
           <Text>Free</Text>
           <Text>SD</Text>
           <Text>HD</Text>
           <Text>4K</Text>
         </Flex>
         <Flex alignItems="center" onClick={onOpen}>
-          <Text>Streaming in :</Text>
-          <Button rightIcon={<ChevronDownIcon />}>India</Button>
+          <Text
+            display={{ base: 'none', md: 'none', lg: 'block', xl: 'block' }}
+            color="var(--ion-color-secondary-tint)"
+          >
+            Streaming in :
+          </Text>
+          <Button size={'sm'} rightIcon={<ChevronDownIcon />}>
+            India
+          </Button>
         </Flex>
       </Flex>
       <Box>
         <Flex gap={5} alignItems="center">
-          <Text style={TextOritation} bg="pink" p="15px 0">
+          <Text style={TextOritation} p="15px 0">
             STREAM
           </Text>
           <Filtericons />
@@ -53,7 +70,7 @@ const Filter = ({ movieProvider }) => {
       </Box>
       <Box>
         <Flex gap={5} alignItems="center">
-          <Text style={TextOritation} bg="gray" p="15px 0">
+          <Text style={TextOritation} p="15px 0">
             BUY
           </Text>
           <Filtericons />

@@ -1,4 +1,4 @@
-import { ReactNode, useContext } from 'react';
+import { ReactNode, useContext, useEffect } from 'react';
 import {
   Box,
   Flex,
@@ -14,14 +14,29 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  InputGroup,
+  InputLeftElement,
+  Input,
+  Text,
+  Image,
+  InputRightElement,
+  VStack,
+  Grid,
 } from '@chakra-ui/react';
-import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
+import { HamburgerIcon, CloseIcon, SearchIcon } from '@chakra-ui/icons';
 import { ColorModeSwitcher } from '../ColorModeSwitcher.js';
-import Footer from './Footer';
+
 import { Logo } from './Footer';
 
 import { FaUserCog } from 'react-icons/fa';
-import Searchbox from './Searchbox';
+import { Searchbox, InputComponents } from './Searchbox';
 import MainRoute from './../pages/MainRoute';
 import { Link } from 'react-router-dom';
 import { MovieContext } from './../context api/ContextProvider';
@@ -44,14 +59,21 @@ const NavLink = ({ text, link }) => (
 
 export default function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { country } = useContext(MovieContext);
-  // const loadfirst=useCountry()
+  const { country, handleOverlay, overlay } = useContext(MovieContext);
+
+  const searchIcon = useDisclosure();
   const Links = [
     { text: 'Home', link: '' },
     { text: 'New', link: 'new' },
     { text: 'Popular', link: country },
     { text: 'WatchList', link: 'watchlist' },
   ];
+  useEffect(() => {
+    if (!overlay) {
+      searchIcon.onClose();
+    }
+  }, [overlay]);
+
   return (
     <>
       <Box
@@ -61,6 +83,7 @@ export default function Navbar() {
         backdropFilter="auto"
         backdropBlur="14px"
         zIndex="160"
+        bg="var(--body-color)"
       >
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
@@ -68,24 +91,32 @@ export default function Navbar() {
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
             aria-label={'Open Menu'}
             display={{ base: 'none', md: 'block', xl: 'none' }}
-            bg={'none'}
             onClick={isOpen ? onClose : onOpen}
+            bg="none"
+            _hover={{
+              bg: 'none',
+            }}
           />
-          <HStack spacing={8} alignItems={'center'}>
+          <Flex spacing={8} alignItems={'center'}>
             <Box>
               <Logo />
             </Box>
-            <Flex display={{ base: 'none', md: 'none', xl: 'flex' }}>
+            <Flex
+              display={{ base: 'none', md: 'none', xl: 'flex' }}
+              justifyContent="space-between"
+            >
               <HStack as={'nav'} spacing={4}>
                 {Links.map((el, index) => (
                   <NavLink key={index} {...el} />
                 ))}
               </HStack>
-              <Searchbox />
+              <Box w="60rem">
+                <Searchbox />
+              </Box>
             </Flex>
-          </HStack>
+          </Flex>
           <Flex alignItems={'center'}>
-            <ColorModeSwitcher />
+            
             <Menu>
               <MenuButton
                 as={Button}
@@ -131,16 +162,58 @@ export default function Navbar() {
               <NavLink key={index} {...el} />
             ))}
           </HStack>
-          <Box>
+
+          <Box w="100%" display={['none', 'block', 'block']}>
             <Searchbox />
+          </Box>
+          <Box
+            w="100%"
+            display={['block', 'none', 'none']}
+            onClick={searchIcon.onOpen}
+          >
+            <Box position="relative">
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<SearchIcon color="gray.300" />}
+                />
+
+                <Input
+                  type="text"
+                  bg="var(--ion-color-search-shade)"
+                  border="none"
+                  outline="none"
+                  placeholder="Search for movies or TV shows "
+                  focusBorderColor={'none'}
+                  onClick={e => {
+                    setTimeout(() => {
+                      handleOverlay(true);
+                    }, 10);
+                  }}
+                />
+              </InputGroup>
+            </Box>
+            <BasicUsage searchIcon={searchIcon} />
           </Box>
         </Flex>
       </Box>
 
       <Box pt={0}>
         <MainRoute />
-        {/* <Footer /> */}
       </Box>
     </>
+  );
+}
+
+function BasicUsage({ searchIcon }) {
+  return (
+    <Box>
+      <Modal isOpen={searchIcon.isOpen} onClose={searchIcon.onClose}>
+        <ModalOverlay />
+        <ModalContent mx="3">
+          <Searchbox />
+        </ModalContent>
+      </Modal>
+    </Box>
   );
 }

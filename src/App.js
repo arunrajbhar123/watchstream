@@ -1,23 +1,21 @@
 import React, { useContext } from 'react';
 import { ChakraProvider, Box, theme } from '@chakra-ui/react';
-
 import Navbar from './components/Navbar';
 import { MovieContext } from './context api/ContextProvider';
-
+import './root.css';
 function App() {
-  const {
-    overlay,
-    handleOverlay,
-    handleMultiOverlay,
-    multiOverlay,
-  } = useContext(MovieContext);
+  const { overlay, handleOverlay, handleMultiOverlay, multiOverlay } =
+    useContext(MovieContext);
 
   return (
-    <ChakraProvider theme={theme}>
+    <Box
+      bg="var(--body-color)"
+      fontFamily="Lato,Lato-fallback,Arial,sans-serif"
+      fontSize="14"
+    >
       <Box
         w="100%"
         h="100vh"
-        bg="rgba(0,0,0,0.5)"
         position="fixed"
         zIndex="160"
         onClick={() => {
@@ -30,7 +28,6 @@ function App() {
       <Box
         w="100%"
         h="100vh"
-        bg="rgba(0,0,0,0.2)"
         position="fixed"
         zIndex="100"
         onClick={() => {
@@ -53,7 +50,7 @@ function App() {
         }
       ></Box>
       <Navbar />
-    </ChakraProvider>
+    </Box>
   );
 }
 

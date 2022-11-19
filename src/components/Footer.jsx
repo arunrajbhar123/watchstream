@@ -41,10 +41,7 @@ const ListHeader = ({ children }: { children: ReactNode }) => {
 
 export default function Footer() {
   return (
-    <Box
-      bg={useColorModeValue('gray.50', 'gray.900')}
-      color={useColorModeValue('gray.700', 'gray.200')}
-    >
+    <Box>
       <Container as={Stack} maxW={'6xl'} py={10}>
         <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={8}>
           <Stack align={'flex-start'}>
@@ -54,7 +51,7 @@ export default function Footer() {
               <Link href={'#'}>Features</Link>
               <Tag
                 size={'sm'}
-                bg={useColorModeValue('green.300', 'green.800')}
+            
                 ml={2}
                 color={'white'}
               >
@@ -112,7 +109,8 @@ export default function Footer() {
           <Logo />
         </Flex>
         <Text pt={6} fontSize={'sm'} textAlign={'center'}>
-          © 2022 Watch Stream.  All external content remains the property of the rightful owner
+          © 2022 Watch Stream. All external content remains the property of the
+          rightful owner
         </Text>
       </Box>
     </Box>

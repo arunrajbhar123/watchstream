@@ -18,8 +18,13 @@ const Sorting = () => {
 
   return (
     <Box>
-      <Flex gap={6} fontSize={'17'} alignItems="center">
-        <Flex cursor="text" alignItems="center">
+      <Flex gap={6} fontSize={'17'} alignItems="center"
+      
+      color="var(--ion-color-light-shade)"
+      >
+        <Flex cursor="text" alignItems="center"
+        color='var(--ion-color-secondary)'
+        >
           <HiFilter fontSize={19} />
           <Text>Filters</Text>
         </Flex>
@@ -29,11 +34,12 @@ const Sorting = () => {
           onClick={() => {
             handleMultiOverlay({ year: true });
           }}
+
         >
           <Text>Release year</Text>
           {show?.year ? <FaAngleUp /> : <FaAngleDown />}
           <Box
-            bg="red"
+           
             top="2rem"
             w="350px"
             position="absolute"
@@ -65,7 +71,7 @@ const Sorting = () => {
           {show?.rating ? <FaAngleUp /> : <FaAngleDown />}
 
           <Box
-            bg="red"
+          
             top="2rem"
             w="350px"
             position="absolute"

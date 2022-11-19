@@ -1,8 +1,12 @@
 import { Flex, Grid, Text } from '@chakra-ui/react';
 const Rating = ({ data }) => {
   return (
-    <Flex gap={14} py={6}>
-      <Grid gap={2}>
+    <Flex gap={14} py={6} 
+    
+    >
+      <Grid gap={2}
+ 
+      >
         <Text>RATING</Text>
         <Text>GENRES</Text>
         <Text>RUNTIME</Text>

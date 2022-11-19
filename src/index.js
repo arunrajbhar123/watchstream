@@ -8,12 +8,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { MovieContextProvider } from './context api/ContextProvider';
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
-const colors = {
-  nav: {
-    light: '#e7e7e764',
-    dark: '#55535364',
-  },
-};
 
 const breakpoints = {
   sm: '375px',
@@ -22,7 +16,7 @@ const breakpoints = {
   xl: '1024px',
   '2xl': '1226px',
 };
-const theme = extendTheme({ colors, breakpoints });
+const theme = extendTheme({ breakpoints });
 root.render(
   <BrowserRouter>
     <MovieContextProvider>

@@ -1,0 +1,15 @@
+:root {
+  --body-color: #060d17;
+  --ion-color-search-shade: #10161d;
+  --body-color-trans: #060d17df;
+  --ion-color-light-shade: #8a8d98;
+  --ion-color-secondary: #4c5a67;
+  --ion-background-color: #060d17;
+  --ion-save-color: #ffffff49;
+  --slider-bg-color: #161718d6;
+  --slider-bg-color-arrow: #7373f4;
+  --slider-bg-color-arrow-hover: #cbcbf7;
+  --ion-color-secondary-shade: #1c252f;
+  --ion-color-secondary-shade-text: #d9e8ed;
+  --ion-color-secondary-tint: #5e6b76;
+}

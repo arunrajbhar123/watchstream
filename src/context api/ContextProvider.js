@@ -5,7 +5,7 @@ export const MovieContextProvider = ({ children }) => {
   const [page, setPage] = useState(1);
   const [totalTitle, setTotalTitle] = useState('');
   const [overlay, setOverlay] = useState(false);
-  const [country, setCountry] = useState('au');
+  const [country, setCountry] = useState('en');
   const [multiOverlay, setMultiOverlay] = useState({
     rating: false,
     year: false,

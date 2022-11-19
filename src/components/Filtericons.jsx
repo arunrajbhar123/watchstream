@@ -5,9 +5,7 @@ const Filtericons = () => {
   return (
     <Box>
       <Image src={icon} alt="icon" rounded="10" w="12" />
-      <Text fontSize="10" pt="2"
-      
-      >
+      <Text fontSize="10" pt="2">
         2 Season <Badge>HD</Badge>
       </Text>
     </Box>

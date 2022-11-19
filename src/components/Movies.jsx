@@ -39,7 +39,8 @@ const Movies = () => {
   }, []);
 
   useEffect(() => {
-    handleChangeUrl('movie/popular');
+    // handleChangeUrl('movie/popular');
+    console.log(location.search);
   }, [handleChangeUrl, location.search]);
 
   useEffect(() => {
@@ -75,7 +76,6 @@ const Movies = () => {
         <FaAngleDown />
         <Box
           w="250px"
-          bg="#111"
           position="absolute"
           m="auto"
           top="8"
@@ -88,14 +88,13 @@ const Movies = () => {
           {content?.map((el, index) => (
             <Box
               key={index}
-              bg="red"
               m={2}
               p={2}
               onClick={() => {
                 handleChangeUrl(el.link);
                 setPage(1);
                 setData([]);
-                navigate(`/au?${el.link.split('/')[1]}`);
+                navigate(`/${country}?${el.link.split('/')[1]}`);
                 handleMultiOverlay({ popContent: false });
                 setContentShow(el.text);
               }}
@@ -123,6 +122,7 @@ const Movies = () => {
                 onClick={e => {
                   e.target.style.color = 'red';
                 }}
+                color="var(--ion-save-color)"
               >
                 <FaBookmark fontSize={22} />
               </Box>
@@ -137,9 +137,7 @@ const Movies = () => {
               />
 
               <Box position="absolute" bottom="2" right="2">
-                <Text bg="#111" color="#fff" p="0 5px">
-                  TV
-                </Text>
+                <Text p="0 5px">TV</Text>
               </Box>
             </Box>
           </Box>
