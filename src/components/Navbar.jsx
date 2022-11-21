@@ -1,8 +1,7 @@
-import { ReactNode, useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import {
   Box,
   Flex,
-  Avatar,
   HStack,
   IconButton,
   Button,
@@ -17,26 +16,16 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   InputGroup,
   InputLeftElement,
   Input,
-  Text,
-  Image,
-  InputRightElement,
-  VStack,
-  Grid,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon, SearchIcon } from '@chakra-ui/icons';
-import { ColorModeSwitcher } from '../ColorModeSwitcher.js';
 
 import { Logo } from './Footer';
 
 import { FaUserCog } from 'react-icons/fa';
-import { Searchbox, InputComponents } from './Searchbox';
+import { Searchbox } from './Searchbox';
 import MainRoute from './../pages/MainRoute';
 import { Link } from 'react-router-dom';
 import { MovieContext } from './../context api/ContextProvider';
@@ -65,7 +54,10 @@ export default function Navbar() {
   const Links = [
     { text: 'Home', link: '' },
     { text: 'New', link: 'new' },
-    { text: 'Popular', link: country },
+    {
+      text: 'Popular',
+      link: country?.country_code?.toLowerCase().toLowerCase(),
+    },
     { text: 'WatchList', link: 'watchlist' },
   ];
   useEffect(() => {
@@ -82,7 +74,7 @@ export default function Navbar() {
         w={'100%'}
         backdropFilter="auto"
         backdropBlur="14px"
-        zIndex="160"
+        zIndex="170"
         bg="var(--body-color)"
       >
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
@@ -116,7 +108,6 @@ export default function Navbar() {
             </Flex>
           </Flex>
           <Flex alignItems={'center'}>
-            
             <Menu>
               <MenuButton
                 as={Button}
@@ -166,11 +157,7 @@ export default function Navbar() {
           <Box w="100%" display={['none', 'block', 'block']}>
             <Searchbox />
           </Box>
-          <Box
-            w="100%"
-            display={['block', 'none', 'none']}
-            onClick={searchIcon.onOpen}
-          >
+          <Box display={['block', 'none', 'none']} onClick={searchIcon.onOpen}>
             <Box position="relative">
               <InputGroup>
                 <InputLeftElement

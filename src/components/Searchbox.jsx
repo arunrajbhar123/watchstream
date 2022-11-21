@@ -7,25 +7,31 @@ import {
   Text,
   Flex,
   Image,
-  useColorModeValue,
   InputRightElement,
   HStack,
   VStack,
   Grid,
+  Wrap,
+  WrapItem,
 } from '@chakra-ui/react';
 import { SearchIcon, CloseIcon } from '@chakra-ui/icons';
 import { useState, useEffect, useContext, Fragment } from 'react';
 import { FaAngleDoubleRight } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { MovieContext } from './../context api/ContextProvider';
 import { useSearch } from './../api call/useSearch';
 import Loader from './Loader';
 import styles from './styles/scrollhide.module.css';
 import { saveData, loadData } from '../utils/localStorage.js';
+import { Slider } from './Slider';
 export const Searchbox = () => {
-  const [text, setText] = useState('');
-  const { overlay, handleOverlay, query, setQuery, EXCTRA_IMG_LINK, country } =
-    useContext(MovieContext);
+  const location = useLocation();
+  let currentsetText = '';
+  if (location.pathname?.split('/')[1] == 'query') {
+    currentsetText = location.pathname?.split('/')[2];
+  }
+  const [text, setText] = useState(currentsetText);
+  const { overlay, handleOverlay, setQuery } = useContext(MovieContext);
   const [recentSearch, setRecentSearh] = useState(
     loadData('recentSearch') || []
   );
@@ -81,7 +87,7 @@ export const Searchbox = () => {
           onKeyPress={e => {
             if (e.charCode === 13) {
               const NewRecentData = recentSearch?.map(item => item === text);
-              console.log(NewRecentData);
+
               if (!NewRecentData[0] && text !== '') {
                 recentSearch.push(text);
                 saveData('recentSearch', recentSearch);
@@ -106,7 +112,7 @@ export const InputComponents = ({ text, setRecentSearh }) => {
   const { overlay, handleOverlay, query, EXCTRA_IMG_LINK, country } =
     useContext(MovieContext);
   const recentSearch = loadData('recentSearch');
-
+  const [recentTitle, setRecentTitle] = useState(loadData('recentTitle') || []);
   return (
     <Box
       bg="var(--ion-color-search-shade)"
@@ -116,71 +122,78 @@ export const InputComponents = ({ text, setRecentSearh }) => {
     >
       {text === '' || searchContent?.length === 0 ? (
         <Box>
-          <Text textAlign="center">
-            {text === '' ? (
-              <>
-                <HStack justifyContent={'space-between'}>
-                  <Text color="#797a7b">Recent searches</Text>
-                  <Text
-                    color={'blue.400'}
+          {text === '' ? (
+            <Box>
+              <HStack justifyContent={'space-between'}>
+                <Text color="#797a7b">Recent searches</Text>
+                <Text
+                  color={'blue.400'}
+                  cursor="pointer"
+                  onClick={() => {
+                    saveData('recentSearch', []);
+                    saveData('recentTitle', []);
+                    setRecentSearh([]);
+                    setRecentTitle([]);
+                  }}
+                >
+                  Clear All
+                </Text>
+              </HStack>
+              <Flex gap="2" className={styles.hideScrollbasr} pt="3">
+                {recentSearch?.map((el, index) => (
+                  <Flex
+                    alignItems="center"
+                    key={index}
+                    className="clearAll"
+                    border={'1px solid grey'}
+                    rounded={'7'}
+                    px="2"
+                    py="1"
                     cursor="pointer"
+                    _hover={{
+                      color: 'white',
+                      border: '1px solid white',
+                    }}
                     onClick={() => {
-                      saveData('recentSearch', []);
-                      setRecentSearh([]);
+                      navigate(`/query/${el}`);
+                      handleOverlay(false);
                     }}
                   >
-                    Clear All
-                  </Text>
-                </HStack>
-                <Flex gap="2" className={styles.hideScrollbasr} pt="3">
-                  {recentSearch?.map((el, index) => (
-                    <Flex
-                      alignItems="center"
-                      key={index}
-                      className="clearAll"
-                      border={'1px solid grey'}
-                      rounded={'7'}
-                      px="2"
-                      py="1"
-                      cursor="pointer"
-                      _hover={{
-                        color: 'white',
-                        border: '1px solid white',
-                      }}
-                      onClick={() => {
-                        navigate(`/query/${el}`);
-                        handleOverlay(false);
-                      }}
-                    >
-                      <SearchIcon mr={1} color="grey" />
-                      <Text>{el}</Text>
-                    </Flex>
-                  ))}
-                </Flex>
+                    <SearchIcon mr={1} color="grey" />
 
-                <Text mt={5} textAlign="start" color="#797a7b">
-                  Recently visited titles
-                </Text>
-                <Flex mt={5}>
-                  <Box>
-                    <Image
-                      rounded={'md'}
-                      w={120}
-                      h={150}
-                      src={
-                        'https://media.architecturaldigest.com/photos/57c7003fdc03716f7c8289dd/master/pass/IMG%20Worlds%20of%20Adventure%20-%201.jpg'
-                      }
-                      alt={'photo'}
-                    />
-                  </Box>
-                </Flex>
-              </>
-            ) : (
-              <Box mt="55">
-                <Loader />
-              </Box>
-            )}
-          </Text>
+                    <Text>{el}</Text>
+                  </Flex>
+                ))}
+              </Flex>
+
+              {recentTitle?.length !== 0 ? (
+                <>
+                  <Text mt={5} textAlign="start" color="#797a7b">
+                    Recently visited titles
+                  </Text>
+                  <Flex mt={5}>
+                    <Box>
+                      <Slider
+                        data={recentTitle}
+                        w={['7rem', '10rem']}
+                        len={7}
+                        keyposter="poster_path"
+                      />
+                    </Box>
+                  </Flex>
+                </>
+              ) : (
+                <TrendingTitle
+                  handleOverlay={handleOverlay}
+                  navigate={navigate}
+                />
+              )}
+            </Box>
+          ) : (
+            <Box mt="55">
+              <Loader />
+            </Box>
+          )}
         </Box>
       ) : (
         <Box
@@ -215,8 +228,20 @@ export const InputComponents = ({ text, setRecentSearh }) => {
                           gap={5}
                           alignItems="center"
                           onClick={() => {
-                            navigate(`/${country}/${el.title}/${el?.id}`);
+                            navigate(
+                              `/${country?.country_code
+                                ?.toLowerCase()
+                                .toLowerCase()}/${el.title}/${el?.id}`
+                            );
                             handleOverlay(false);
+                            const NewRecentData = recentTitle?.map(
+                              item => item.id === el.id
+                            );
+
+                            if (!NewRecentData[0] && text !== '') {
+                              recentTitle.push(el);
+                              saveData('recentTitle', recentTitle);
+                            }
                           }}
                         >
                           <Box w="3rem">
@@ -255,7 +280,11 @@ export const InputComponents = ({ text, setRecentSearh }) => {
                           gap={5}
                           alignItems="center"
                           onClick={() => {
-                            navigate(`/${country}/${el.title}/${el?.id}`);
+                            navigate(
+                              `/${country?.country_code
+                                ?.toLowerCase()
+                                .toLowerCase()}/${el.title}/${el?.id}`
+                            );
                             handleOverlay(false);
                           }}
                         >
@@ -298,6 +327,56 @@ export const InputComponents = ({ text, setRecentSearh }) => {
           ) : null}
         </Box>
       )}
+    </Box>
+  );
+};
+
+const TrendingTitle = ({ handleOverlay, navigate }) => {
+  const data = [
+    'Trending',
+    'Trending',
+    'Trending',
+    'Trending',
+    'Trending dkjfnf ',
+    'Trending dkjfnf ',
+    'Trending dkjfnf ',
+    'Trending dkjfnf ',
+    'Trending dkjfnf ',
+    'Trending dkjfnf ',
+    'Trending dkjfnf ',
+    'Trending dkjfnf ',
+  ];
+  return (
+    <Box>
+      <Text color="#797a7b" pt="5" pb="2">
+        Trending sklfnfijnfdkj
+      </Text>
+
+      <Wrap>
+        {data?.map((el, index) => (
+          <WrapItem
+            alignItems="center"
+            key={index}
+            border={'1px solid grey'}
+            rounded={'7'}
+            px="2"
+            py="1"
+            cursor="pointer"
+            _hover={{
+              color: 'white',
+              border: '1px solid white',
+            }}
+            onClick={() => {
+              navigate(`/query/${el}`);
+              handleOverlay(false);
+            }}
+          >
+            <SearchIcon mr={1} color="grey" />
+
+            <Text>{el}</Text>
+          </WrapItem>
+        ))}
+      </Wrap>
     </Box>
   );
 };

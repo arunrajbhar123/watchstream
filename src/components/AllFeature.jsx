@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { Box, Flex, Text, Slide, useDisclosure } from '@chakra-ui/react';
 import Sorting from './Sorting';
 import { HiFilter } from 'react-icons/hi';
 import Mobilefilter from './Mobilefilter';
 import { FaTimes } from 'react-icons/fa';
+import { MovieContext } from './../context api/ContextProvider';
+import { useNavigate } from 'react-router-dom';
 const AllFeature = () => {
   const { isOpen, onToggle } = useDisclosure();
 
+  const { handleChangeUrl, country, highlight, setHighlight, setPage } =
+    useContext(MovieContext);
+  const navigate = useNavigate();
   return (
     <Flex justify="space-between" alignItems="center">
       <Flex
@@ -14,9 +19,62 @@ const AllFeature = () => {
         fontSize={{ base: '17', lg: '22', xl: '22' }}
         alignItems="center"
       >
-        <Text>All</Text>
-        <Text>Movies</Text>
-        <Text>TV Shows</Text>
+        <Box position="relative">
+          <Text
+            color={highlight === 'All' ? 'white' : 'grey'}
+            _before={
+              highlight === 'All'
+                ? {
+                    ...AfterStyle,
+                  }
+                : null
+            }
+            onClick={() => {
+              setPage(1);
+              navigate(`/${country?.country_code?.toLowerCase()}`);
+            }}
+          >
+            All
+          </Text>
+        </Box>
+        <Box position="relative">
+          <Text
+            color={highlight === 'Movies' ? 'white' : 'grey'}
+            _before={
+              highlight === 'Movies'
+                ? {
+                    ...AfterStyle,
+                  }
+                : null
+            }
+            onClick={() => {
+              setPage(1);
+              navigate(`/${country?.country_code?.toLowerCase()}/movies`);
+            }}
+          >
+            Movies
+          </Text>
+        </Box>
+        <Box position="relative">
+          <Text
+            color={highlight === 'TV' ? 'white' : 'grey'}
+            _before={
+              highlight === 'TV'
+                ? {
+                    ...AfterStyle,
+                  }
+                : null
+            }
+            onClick={() => {
+              setPage(1);
+              setHighlight('TV');
+              handleChangeUrl(`trending/tv/day`);
+              navigate(`/${country?.country_code?.toLowerCase()}/tv-show`);
+            }}
+          >
+            TV Shows
+          </Text>
+        </Box>
         <Box display={{ base: 'none', lg: 'block', xl: 'block' }}>
           <Sorting />
         </Box>
@@ -46,3 +104,13 @@ const AllFeature = () => {
 };
 
 export default AllFeature;
+
+const AfterStyle = {
+  content: '" "',
+  bg: 'red',
+  w: '100%',
+  h: '3px',
+
+  position: 'absolute',
+  bottom: 0,
+};

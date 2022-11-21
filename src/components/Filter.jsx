@@ -16,8 +16,25 @@ import styles from './styles/unselectabletext.module.css';
 import { HiFilter } from 'react-icons/hi';
 import Filtericons from './Filtericons';
 import { ChevronDownIcon } from '@chakra-ui/icons';
+import useWatchProvider from './../api call/useWatchProvider';
+
 const Filter = ({ movieProvider }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { watchProvider } = useWatchProvider(movieProvider);
+  // console.log(watchProvider);
+
+  var ProviderBuy = [];
+  var ProviderRent = [];
+  var ProviderFlatRate = [];
+  // flatrate
+
+  for (let key in watchProvider) {
+    if (key === 'IN') {
+      ProviderBuy = watchProvider?.IN?.buy;
+      ProviderRent = watchProvider?.IN?.rent;
+      ProviderFlatRate = watchProvider?.IN?.flatrate;
+    }
+  }
 
   return (
     <Box>
@@ -60,21 +77,41 @@ const Filter = ({ movieProvider }) => {
           </Button>
         </Flex>
       </Flex>
+      {ProviderFlatRate?.length > 0 ? (
+        <Box>
+          <Flex gap={5} alignItems="center">
+            <Text style={TextOritation} p="15px 0" 
+            bg="#d4d1d1"
+            >
+              STREAM
+            </Text>
+            <Filtericons data={ProviderFlatRate} />
+          </Flex>
+        </Box>
+      ) : null}
       <Box>
-        <Flex gap={5} alignItems="center">
-          <Text style={TextOritation} p="15px 0">
-            STREAM
-          </Text>
-          <Filtericons />
-        </Flex>
+        {ProviderBuy?.length > 0 ? (
+          <Flex gap={5} alignItems="center">
+            <Text style={TextOritation} p="15px 0"
+            bg="#a3a1a1"
+            >
+              BUY
+            </Text>
+            <Filtericons data={ProviderBuy} />
+          </Flex>
+        ) : null}
       </Box>
       <Box>
-        <Flex gap={5} alignItems="center">
-          <Text style={TextOritation} p="15px 0">
-            BUY
-          </Text>
-          <Filtericons />
-        </Flex>
+        {ProviderRent?.length > 0 ? (
+          <Flex gap={5} alignItems="center">
+            <Text 
+            bg="grey"
+            style={TextOritation} p="15px 0">
+              RENT
+            </Text>
+            <Filtericons data={ProviderRent} />
+          </Flex>
+        ) : null}
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay bg="rgba(0,0,0,0.5)" />

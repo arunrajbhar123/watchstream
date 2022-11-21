@@ -3,10 +3,11 @@ import { ChakraProvider, Box, theme } from '@chakra-ui/react';
 import Navbar from './components/Navbar';
 import { MovieContext } from './context api/ContextProvider';
 import './root.css';
+import useUserLocation from './api call/useUserLocation';
 function App() {
   const { overlay, handleOverlay, handleMultiOverlay, multiOverlay } =
     useContext(MovieContext);
-
+  const run = useUserLocation();
   return (
     <Box
       bg="var(--body-color)"
@@ -15,8 +16,17 @@ function App() {
     >
       <Box
         w="100%"
+        top="0"
         h="100vh"
         position="fixed"
+        bg={
+          overlay ||
+          multiOverlay.rating ||
+          multiOverlay.year ||
+          multiOverlay.popContent
+            ? 'rgba(0,0,0,0.5)'
+            : null
+        }
         zIndex="160"
         onClick={() => {
           if (overlay) {

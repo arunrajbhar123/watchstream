@@ -12,12 +12,23 @@ import { useState, useRef, useContext, useEffect } from 'react';
 import { FaAngleRight, FaAngleLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { MovieContext } from './../context api/ContextProvider';
-export const Slider = ({ data, w = '11.5rem', setIsLoaderToggle, title }) => {
+
+
+export const Slider = ({
+  data,
+  w = '11.5rem',
+  setIsLoaderToggle,
+  title,
+  len,
+  keyposter,
+  scroll = 4,
+  radius = '5',
+}) => {
   const { isOpen, onToggle } = useDisclosure();
   const inputImg = useRef([]);
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { EXCTRA_IMG_LINK, country } = useContext(MovieContext);
+  const { EXCTRA_IMG_LINK, country, handleOverlay } = useContext(MovieContext);
   useEffect(() => {
     if (currentIndex !== 0) {
       inputImg?.current[currentIndex]?.scrollIntoView({
@@ -29,7 +40,7 @@ export const Slider = ({ data, w = '11.5rem', setIsLoaderToggle, title }) => {
   }, [currentIndex]);
 
   return (
-    <Box>
+    <Box py="2">
       {title !== undefined ? (
         <Text
           className={StyleSe.unselectable}
@@ -42,27 +53,29 @@ export const Slider = ({ data, w = '11.5rem', setIsLoaderToggle, title }) => {
       ) : null}
 
       <Flex position="relative" onMouseEnter={onToggle} onMouseLeave={onToggle}>
-        <ScaleFade initialScale={0.9} in={isOpen}>
-          <Box display={currentIndex === 0 ? 'none' : 'block'}>
-            <Flex
-              display={{ base: 'none', md: 'none', lg: 'flex', xl: 'flex' }}
-              {...SliderIcon}
-              _hover={{
-                color: 'var( --slider-bg-color-arrow-hover)',
-              }}
-              onClick={() => {
-                if (currentIndex !== 0) {
-                  setCurrentIndex(currentIndex - 4);
-                }
-              }}
-            >
-              <FaAngleLeft />
-            </Flex>
-          </Box>
-        </ScaleFade>
+        {data?.length > len ? (
+          <ScaleFade initialScale={0.9} in={isOpen}>
+            <Box display={currentIndex === 0 ? 'none' : 'block'}>
+              <Flex
+                display={{ base: 'none', md: 'none', lg: 'flex', xl: 'flex' }}
+                {...SliderIcon}
+                _hover={{
+                  color: 'var( --slider-bg-color-arrow-hover)',
+                }}
+                onClick={() => {
+                  if (currentIndex !== 0) {
+                    setCurrentIndex(currentIndex - scroll);
+                  }
+                }}
+              >
+                <FaAngleLeft />
+              </Flex>
+            </Box>
+          </ScaleFade>
+        ) : null}
         <Flex gap={2} className={styles.hideScrollbasr} pr="5">
           {data?.map((el, index) => {
-            if (el.backdrop_path !== null) {
+            if (el[keyposter] !== null) {
               return (
                 <Image
                   key={index}
@@ -71,13 +84,42 @@ export const Slider = ({ data, w = '11.5rem', setIsLoaderToggle, title }) => {
                     inputImg.current[index] = element;
                   }}
                   w={w}
-                  rounded={5}
-                  src={EXCTRA_IMG_LINK + el.poster_path}
+                  rounded={radius}
+                  src={EXCTRA_IMG_LINK + el[keyposter]}
                   onClick={() => {
-                    navigate(`/${country}/${el.title}/${el?.id}`);
+                    if (keyposter !== 'logo_path') {
+                      let routeNew;
+                      if (el?.title) {
+                        routeNew = el.title;
+                      } else {
+                        routeNew = el.name;
+                      }
+                      var content;
+                      if (el?.media_type === 'tv' || true) {
+                        content = 'tv-show';
+                      } else if (el?.media_type === 'movie') {
+                        content = 'movies';
+                      }
+
+                      if (content) {
+                        navigate(
+                          `/${country?.country_code?.toLowerCase()}/${
+                            content || ''
+                          }/${routeNew}/${el?.id}`
+                        );
+                      } else {
+                        navigate(
+                          `/${country?.country_code?.toLowerCase()}/${routeNew}/${
+                            el?.id
+                          }`
+                        );
+                      }
+                    }
+
                     setIsLoaderToggle(true);
                     document.body.scrollTop = 0;
                     document.documentElement.scrollTop = 0;
+                    handleOverlay(false);
                   }}
                 />
               );
@@ -85,25 +127,28 @@ export const Slider = ({ data, w = '11.5rem', setIsLoaderToggle, title }) => {
           })}
         </Flex>
 
-        <ScaleFade in={isOpen}>
-          <Box display={currentIndex === data?.length - 1 ? 'none' : 'block'}>
-            <Flex
-              display={{ base: 'none', md: 'none', lg: 'flex', xl: 'flex' }}
-              {...SliderIcon}
-              _hover={{
-                color: 'var( --slider-bg-color-arrow-hover)',
-              }}
-              right="0"
-              onClick={() => {
-                if (currentIndex <= data?.length - 1) {
-                  setCurrentIndex(currentIndex + 4);
-                }
-              }}
-            >
-              <FaAngleRight />
-            </Flex>
-          </Box>
-        </ScaleFade>
+        {data?.length > len ? (
+          <ScaleFade in={isOpen}>
+            <Box display={currentIndex === data?.length - 1 ? 'none' : 'block'}>
+              <Flex
+                display={{ base: 'none', md: 'none', lg: 'flex', xl: 'flex' }}
+                {...SliderIcon}
+                _hover={{
+                  color: 'var( --slider-bg-color-arrow-hover)',
+                }}
+                right="0"
+                onClick={() => {
+                  if (currentIndex <= data?.length - 1) {
+                    setCurrentIndex(currentIndex + scroll);
+                  }
+                }}
+              >
+                <FaAngleRight />
+              </Flex>
+            </Box>
+           
+          </ScaleFade>
+        ) : null}
       </Flex>
     </Box>
   );

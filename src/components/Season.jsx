@@ -4,16 +4,23 @@ import { FaBookmark, FaPlayCircle, FaPauseCircle } from 'react-icons/fa';
 import { useState } from 'react';
 import styles from '../components/styles/scrollhide.module.css';
 import { Slider } from './Slider';
-const Season = ({ currentVideo, video, setCurrentVideo, setShow }) => {
+const Season = ({ currentVideo, video, setCurrentVideo, setShow, data }) => {
   const [mapOnly, setMapOnly] = useState(4);
   const [toggle, setToggle] = useState(false);
+
   return (
     <Box pt="3">
       <Text>2 SEASONS</Text>
 
-      <Flex gap={3} className={styles.hideScrollbasr} w="750px">
-        <Slider />
-      </Flex>
+      <Box gap={3} className={styles.hideScrollbasr}>
+        <Slider
+          data={data?.seasons?.reverse()}
+          keyposter="poster_path"
+          len={5}
+          w="9rem"
+          
+        />
+      </Box>
 
       <Box p="15px 0">
         {video?.map((el, index) => {
@@ -61,7 +68,7 @@ const Season = ({ currentVideo, video, setCurrentVideo, setShow }) => {
             );
           }
         })}
-        {video?.length > 3 ? (
+        {video?.length > 4 ? (
           toggle ? (
             <Button
               w="100%"

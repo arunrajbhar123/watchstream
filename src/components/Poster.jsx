@@ -1,7 +1,10 @@
-import { Text, Flex } from '@chakra-ui/react';
+import { Text, Flex, Button } from '@chakra-ui/react';
 import { FaBookmark, FaCheck } from 'react-icons/fa';
 import { HiThumbUp, HiThumbDown } from 'react-icons/hi';
 const Poster = () => {
+  const handleAction = e => {
+    e.target.style.color = 'red';
+  };
   return (
     <Flex
       justifyContent="space-between"
@@ -10,19 +13,19 @@ const Poster = () => {
       roundedBottomLeft={5}
       roundedBottomRight={5}
     >
-      <Flex {...IconStyle}>
+      <Flex onClick={handleAction} {...IconStyle}>
         <FaBookmark />
         <Text>Tracking</Text>
       </Flex>
-      <Flex {...IconStyle}>
+      <Flex onClick={handleAction} {...IconStyle}>
         <FaCheck />
         <Text>Seen All</Text>
       </Flex>
-      <Flex {...IconStyle}>
+      <Flex onClick={handleAction} {...IconStyle}>
         <HiThumbUp />
         <Text>Like</Text>
       </Flex>
-      <Flex {...IconStyle}>
+      <Flex {...IconStyle} onClick={handleAction}>
         <HiThumbDown />
         <Text>Dislike</Text>
       </Flex>

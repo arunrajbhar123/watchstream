@@ -10,13 +10,17 @@ const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
 
 const breakpoints = {
-  sm: '375px',
-  md: '425px',
-  lg: '768px',
-  xl: '1024px',
-  '2xl': '1226px',
+  sm: '480px',
+  md: '768px',
+  lg: '1024px',
+  xl: '1200px',
+  
 };
-const theme = extendTheme({ breakpoints });
+const config = {
+  initialColorMode: 'dark',
+  useSystemColorMode: false,
+};
+const theme = extendTheme({ config, breakpoints });
 root.render(
   <BrowserRouter>
     <MovieContextProvider>

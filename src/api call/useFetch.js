@@ -1,13 +1,21 @@
 import axios from 'axios';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { MovieContext } from './../context api/ContextProvider';
 const useFetch = url => {
-  const { handleData, data, page, setTotalTitle, setIsLoading ,country} =
+  const { handleData, data, page, setTotalTitle, setIsLoading } =
     useContext(MovieContext);
+ 
+  const [lastUrl, setLastUrl] = useState();
   useEffect(() => {
     setIsLoading({ movies: true });
+   
+    if (lastUrl !== url) {
+      handleData([]);
+    }
+    setLastUrl(url);
+
     axios
-      .get(url + `&page=${page}&with_original_language=${country}`)
+      .get(url + `&page=${page}&with_original_language=hi`)
       .then(res => {
         handleData([...data, ...res.data.results]);
         setTotalTitle(res.data.total_results);
@@ -16,7 +24,7 @@ const useFetch = url => {
       .catch(err => {
         console.log(err);
       });
-  }, [page, url]);
+  }, [lastUrl, page, url]);
 
   return {};
 };

@@ -11,8 +11,30 @@ const MainRoute = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path={`/${country}/:title/:id`} element={<Moviedetails />} />
-      <Route path={`/${country}`} element={<Popular />} />
+      <Route
+        path={`/${country?.country_code?.toLowerCase()}/:title/:id`}
+        element={<Moviedetails />}
+      />
+      <Route
+        path={`/${country?.country_code?.toLowerCase()}/tv-show/:title/:id`}
+        element={<Moviedetails />}
+      />
+      <Route
+        path={`/${country?.country_code?.toLowerCase()}/movies/:title/:id`}
+        element={<Moviedetails />}
+      />
+      <Route
+        path={`/${country?.country_code?.toLowerCase()}`}
+        element={<Popular />}
+      />
+      <Route
+        path={`/${country?.country_code?.toLowerCase()}/movies`}
+        element={<Popular />}
+      />
+      <Route
+        path={`/${country?.country_code?.toLowerCase()}/tv-show`}
+        element={<Popular />}
+      />
       <Route path="/new" element={<New />} />
       <Route path="/query/:title" element={<Searchresults />} />
     </Routes>

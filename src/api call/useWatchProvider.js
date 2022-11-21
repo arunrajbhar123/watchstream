@@ -2,26 +2,25 @@ import axios from 'axios';
 import { useEffect, useState, useContext } from 'react';
 import { MovieContext } from './../context api/ContextProvider';
 
-const useMovieDetails = movie_id => {
-  const [movieData, setMovieData] = useState([]);
+const useWatchProvider = movie_id => {
+  const [watchProvider, setWatchProvider] = useState([]);
   const { typeContent } = useContext(MovieContext);
 
   useEffect(() => {
     if (movie_id) {
       axios
         .get(
-          `https://api.themoviedb.org/3/${typeContent}/${movie_id}?api_key=${process.env.REACT_APP_KEY}&language=en-US`
+          `https://api.themoviedb.org/3/${typeContent}/${movie_id}/watch/providers?api_key=${process.env.REACT_APP_KEY}&language=en-US&watch_region=IN`
         )
         .then(res => {
-          setMovieData(res.data);
+          setWatchProvider(res.data.results);
         })
         .catch(err => {
           console.log(err);
         });
     }
-  }, [typeContent, movie_id]);
+  }, [typeContent,movie_id]);
 
-  return { movieData };
+  return { watchProvider };
 };
-
-export { useMovieDetails };
+export default useWatchProvider;

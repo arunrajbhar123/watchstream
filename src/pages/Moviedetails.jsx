@@ -1,19 +1,20 @@
-import { Box, Grid, Flex, Text, Image } from '@chakra-ui/react';
+import { Box, Flex, Text, Image } from '@chakra-ui/react';
 import { FaShareAlt, FaPlay } from 'react-icons/fa';
 import Season from './../components/Season';
 import Poster from './../components/Poster';
 import Rating from './../components/Rating';
 import Filter from './../components/Filter';
 
-import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
 
-import useMovieDetails from './../api call/useMovieDetails';
+import { useMovieDetails } from './../api call/useMovieDetails';
 import useVideo from './../api call/useVideo';
 import useSimilar from './../api call/useSimilar';
 import Footer from '../components/Footer';
 import { Slider } from './../components/Slider';
 import Loader from './../components/Loader';
+import { MovieContext } from './../context api/ContextProvider';
 
 const Moviedetails = () => {
   const parmas = useParams();
@@ -25,9 +26,18 @@ const Moviedetails = () => {
   const [show, setShow] = useState(false);
   const EXCTRA_IMG__LINK = 'https://image.tmdb.org/t/p/w500/';
   const [isLoaderToggle, setIsLoaderToggle] = useState(true);
+  const { setTypeContent } = useContext(MovieContext);
+  const location = useLocation();
   useEffect(() => {
     document.documentElement.scrollTop = 0;
   }, []);
+  useEffect(() => {
+    if (location.pathname.split('/')[2] === 'tv-show') {
+      setTypeContent('tv');
+    } else {
+      setTypeContent('movie');
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     setShow(false);
@@ -46,7 +56,7 @@ const Moviedetails = () => {
       try {
         await navigator.share({
           title: 'Images',
-          text: movieData?.title,
+          text: movieData?.title || movieData?.name,
           url,
         });
       } catch (error) {
@@ -98,7 +108,7 @@ const Moviedetails = () => {
           <Box
             position="absolute"
             w={['100%', '', '78.6%']}
-            h={['215px', '', '395px']}
+            h={['215px', '', '380px']}
             display={show ? 'block' : 'none'}
             zIndex={106}
             left={['0', '', '10.7%']}
@@ -151,9 +161,11 @@ const Moviedetails = () => {
                 roundedTopLeft={5}
                 roundedTopRight={5}
               />
-              <Box position="absolute" bottom="2" right="2">
-                <Text p="0 5px">TV</Text>
-              </Box>
+              {location.pathname.split('/')[2] === 'tv-show' ? (
+                <Box position="absolute" bottom="2" right="2">
+                  <Text p="0 5px">TV</Text>
+                </Box>
+              ) : null}
             </Box>
             <Box
               display={{ base: 'none', md: 'none', lg: 'block', xl: 'block' }}
@@ -168,23 +180,39 @@ const Moviedetails = () => {
           </Box>
 
           <Box w="100%">
-            <Flex justifyContent="space-between" pt="3" pr="3">
+            <Flex
+              justifyContent="space-between"
+              pt={['3', '0', '0']}
+              px={['2', '0', '0']}
+            >
               <Box>
-                <Text fontSize={['22', '30']}>
-                  {movieData?.title} ({movieData?.release_date?.split('-')[0]})
+                <Text fontSize={['22', '', '30']}>
+                  {movieData?.title ? (
+                    <>
+                      {movieData?.title} (
+                      {movieData?.release_date?.split('-')[0]})
+                    </>
+                  ) : (
+                    <>
+                      {movieData?.name} (
+                      {movieData?.last_air_date?.split('-')[0]})
+                    </>
+                  )}
+                  {/*  */}
                 </Text>
               </Box>
 
               <Flex
                 onClick={() => handleShare()}
                 cursor="pointer"
-                fontSize={['17', '25']}
                 justifyContent="center"
                 alignItems="center"
                 direction="column"
                 color="var(--ion-color-secondary)"
               >
-                <FaShareAlt />
+                <Box fontSize={['22', '', '30']}>
+                  <FaShareAlt />
+                </Box>
                 <Text
                   display={{
                     base: 'none',
@@ -204,13 +232,17 @@ const Moviedetails = () => {
               currentVideo={currentVideo}
               setCurrentVideo={setCurrentVideo}
               setShow={setShow}
+              data={movieData}
             />
-            <Filter movieProvider={'movieProvider'} />
+
+            <Filter movieProvider={movieData?.id} />
 
             <Slider
               data={similar}
               setIsLoaderToggle={setIsLoaderToggle}
               title={movieData?.title?.toUpperCase()}
+              len={4}
+              keyposter="poster_path"
             />
           </Box>
         </Flex>

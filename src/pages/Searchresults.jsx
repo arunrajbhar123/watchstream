@@ -76,7 +76,13 @@ const Searchresults = () => {
           h={['250px', '350px']}
           rounded={10}
           cursor="pointer"
-          onClick={() => navigate(`/${country}/${el.title}/${el?.id}`)}
+          onClick={() =>
+            navigate(
+              `/${country?.country_code?.toLowerCase().toLowerCase()}/${
+                el.title
+              }/${el?.id}`
+            )
+          }
         >
           {el.backdrop_path !== null ? (
             <Image

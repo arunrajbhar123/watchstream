@@ -16,9 +16,10 @@ export const MovieContextProvider = ({ children }) => {
   });
 
   const [query, setQuery] = useState('');
-
+  const [typeContent, setTypeContent] = useState('movie');
+  const [highlight, setHighlight] = useState('All');
   const [urlPopular, setUrlPopular] = useState(
-    `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.REACT_APP_KEY}`
+    `https://api.themoviedb.org/3/trending/all/week?api_key=${process.env.REACT_APP_KEY}`
   );
   const EXCTRA_IMG_LINK = 'https://image.tmdb.org/t/p/w500/';
 
@@ -27,10 +28,6 @@ export const MovieContextProvider = ({ children }) => {
   };
   const handleData = info => {
     setData(info);
-  };
-
-  const handleCountry = val => {
-    setCountry(val);
   };
 
   const handleOverlay = val => {
@@ -49,6 +46,10 @@ export const MovieContextProvider = ({ children }) => {
   return (
     <MovieContext.Provider
       value={{
+        highlight,
+        setHighlight,
+        typeContent,
+        setTypeContent,
         setQuery,
         EXCTRA_IMG_LINK,
         query,
@@ -65,7 +66,7 @@ export const MovieContextProvider = ({ children }) => {
         overlay,
         handleOverlay,
         country,
-        handleCountry,
+        setCountry,
         data,
         page,
         handlePage,
