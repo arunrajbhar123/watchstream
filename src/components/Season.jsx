@@ -1,6 +1,5 @@
-import { Box, Image, Text, Flex, VStack, Grid, Button } from '@chakra-ui/react';
-import poster from '../asset/the-white-lotus (1).webp';
-import { FaBookmark, FaPlayCircle, FaPauseCircle } from 'react-icons/fa';
+import { Box, Text, Flex, Button } from '@chakra-ui/react';
+import { FaPlayCircle, FaPauseCircle } from 'react-icons/fa';
 import { useState } from 'react';
 import styles from '../components/styles/scrollhide.module.css';
 import { Slider } from './Slider';
@@ -14,11 +13,11 @@ const Season = ({ currentVideo, video, setCurrentVideo, setShow, data }) => {
 
       <Box gap={3} className={styles.hideScrollbasr}>
         <Slider
-          data={data?.seasons?.reverse()}
+          data={data}
           keyposter="poster_path"
           len={5}
           w="9rem"
-          
+          seasons={true}
         />
       </Box>
 
@@ -70,15 +69,7 @@ const Season = ({ currentVideo, video, setCurrentVideo, setShow, data }) => {
         })}
         {video?.length > 4 ? (
           toggle ? (
-            <Button
-              w="100%"
-              onClick={() => {
-                setMapOnly(4);
-                setToggle(false);
-              }}
-            >
-              Less Video Watch
-            </Button>
+            null
           ) : (
             <Button
               onClick={() => {

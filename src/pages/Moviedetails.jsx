@@ -4,10 +4,8 @@ import Season from './../components/Season';
 import Poster from './../components/Poster';
 import Rating from './../components/Rating';
 import Filter from './../components/Filter';
-
 import { useParams, useLocation } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
-
 import { useMovieDetails } from './../api call/useMovieDetails';
 import useVideo from './../api call/useVideo';
 import useSimilar from './../api call/useSimilar';
@@ -15,6 +13,7 @@ import Footer from '../components/Footer';
 import { Slider } from './../components/Slider';
 import Loader from './../components/Loader';
 import { MovieContext } from './../context api/ContextProvider';
+import useCasting from './../api call/useCasting';
 
 const Moviedetails = () => {
   const parmas = useParams();
@@ -24,10 +23,11 @@ const Moviedetails = () => {
   const [currentVideo, setCurrentVideo] = useState(0);
   const [autoplayQuery, setAutoPlayQuery] = useState('');
   const [show, setShow] = useState(false);
-  const EXCTRA_IMG__LINK = 'https://image.tmdb.org/t/p/w500/';
+
   const [isLoaderToggle, setIsLoaderToggle] = useState(true);
-  const { setTypeContent } = useContext(MovieContext);
+  const { setTypeContent, EXCTRA_IMG_LINK } = useContext(MovieContext);
   const location = useLocation();
+  const { casting } = useCasting(parmas?.id);
   useEffect(() => {
     document.documentElement.scrollTop = 0;
   }, []);
@@ -84,101 +84,39 @@ const Moviedetails = () => {
 
   return (
     <Box pt={{ base: '7rem', md: '7rem', lg: '7rem', xl: '4rem' }}>
-      <Box h={['38vh', '', '63vh']} overflow="hidden">
-        <Box
-          position="absolute"
-          w="100%"
-          h={['25vh', '', '50vh']}
-          cursor="pointer"
-          display={show ? 'none' : 'block'}
-        >
-          <Flex
-            justifyContent="center"
-            alignItems="center"
-            h="100%"
-            onClick={() => {
-              setShow(true);
-            }}
-          >
-            <FaPlay fontSize="25" bg="red" color="red" />
-          </Flex>
-        </Box>
-
-        <Box position="relative">
-          <Box
-            position="absolute"
-            w={['100%', '', '78.6%']}
-            h={['215px', '', '380px']}
-            display={show ? 'block' : 'none'}
-            zIndex={106}
-            left={['0', '', '10.7%']}
-            m="auto"
-          >
-            <iframe
-              width="100%"
-              height="100%"
-              src={`https://www.youtube.com/embed/${video[currentVideo]?.key}${autoplayQuery}`}
-              title={video[0]?.name}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          </Box>
-        </Box>
-        <Image
-          src={EXCTRA_IMG__LINK + movieData?.backdrop_path}
-          alt="bg"
-          style={{
-            width: '100%',
-            height: 'auto',
-            top: '4rem',
-          }}
-        />
-      </Box>
-
+      <BackGroundImgIframe
+        url={EXCTRA_IMG_LINK + movieData?.backdrop_path}
+        show={show}
+        setShow={setShow}
+        video={video}
+        currentVideo={currentVideo}
+        autoplayQuery={autoplayQuery}
+      />
       <Box
         color="var(--ion-background-color)"
         boxShadow={'10px -10px 105px 132px #060d17'}
         position="relative"
+        display={['none', 'none', 'block', 'block']}
       >
         .
       </Box>
+
       <Box
         bg="var(--ion-background-color)"
-        w={{ base: '100%', md: '100%', lg: '1170px', xl: '1184px' }}
+        w={['100%', '100%', '100%', '79%']}
+        // maxW={'79%'}
         position={'relative'}
         m="auto"
-        top="-8.3rem"
+        top={['0rem', '-8.3rem', '-8.3rem', '-8.3rem']}
         rounded="xl"
-        p={[0, 0, 7]}
+        p={[0, 4, 7]}
       >
-        <Flex justifyContent="space-between" gap={5}>
-          <Box display={{ base: 'none', md: 'none', lg: 'block', xl: 'block' }}>
-            <Box position="relative" w="22rem">
-              <Image
-                src={EXCTRA_IMG__LINK + movieData?.poster_path}
-                alt="poster"
-                roundedTopLeft={5}
-                roundedTopRight={5}
-              />
-              {location.pathname.split('/')[2] === 'tv-show' ? (
-                <Box position="absolute" bottom="2" right="2">
-                  <Text p="0 5px">TV</Text>
-                </Box>
-              ) : null}
-            </Box>
-            <Box
-              display={{ base: 'none', md: 'none', lg: 'block', xl: 'block' }}
-            >
-              <Poster />
-              <Box
-                display={{ base: 'none', md: 'none', lg: 'none', xl: 'block' }}
-              >
-                <Rating data={movieData} />
-              </Box>
-            </Box>
-          </Box>
-
+        <Flex gap={5}>
+          <ImagePoster
+            location={location}
+            movieData={movieData}
+            url={EXCTRA_IMG_LINK + movieData?.poster_path}
+          />
           <Box w="100%">
             <Flex
               justifyContent="space-between"
@@ -198,7 +136,6 @@ const Moviedetails = () => {
                       {movieData?.last_air_date?.split('-')[0]})
                     </>
                   )}
-                  {/*  */}
                 </Text>
               </Box>
 
@@ -232,15 +169,20 @@ const Moviedetails = () => {
               currentVideo={currentVideo}
               setCurrentVideo={setCurrentVideo}
               setShow={setShow}
-              data={movieData}
+              data={movieData?.seasons?.reverse()}
             />
 
             <Filter movieProvider={movieData?.id} />
 
+            <Slider data={casting} cast={true} len={4} />
+
             <Slider
               data={similar}
               setIsLoaderToggle={setIsLoaderToggle}
-              title={movieData?.title?.toUpperCase()}
+              title={
+                movieData?.title?.toUpperCase() ||
+                movieData?.name?.toUpperCase()
+              }
               len={4}
               keyposter="poster_path"
             />
@@ -252,3 +194,94 @@ const Moviedetails = () => {
   );
 };
 export default Moviedetails;
+
+const BackGroundImgIframe = ({
+  url,
+  show,
+  setShow,
+  video,
+  currentVideo,
+  autoplayQuery,
+}) => {
+  return (
+    <Box
+      h={['10rem', '12rem', '20rem', '30rem']}
+      overflow="hidden"
+      position="relative"
+    >
+      <Box
+        position="absolute"
+        w="100%"
+        h="100%"
+        cursor="pointer"
+        display={show ? 'none' : 'block'}
+      >
+        <Flex
+          justifyContent="center"
+          alignItems="center"
+          h="100%"
+          mt={['', '-6', '-10', '-10']}
+          onClick={() => {
+            setShow(true);
+          }}
+        >
+          <FaPlay fontSize="25" bg="red" color="red" />
+        </Flex>
+      </Box>
+
+      <Box position="relative">
+        <Box
+          position="absolute"
+          w="100%"
+          display={show ? 'block' : 'none'}
+          zIndex={5}
+        >
+          <Box
+            w={['100%', '100%', '100%', '80%']}
+            m="auto"
+            h={['10rem', '', '13rem', '23rem']}
+          >
+            <iframe
+              width="100%"
+              height="100%"
+              src={`https://www.youtube.com/embed/${video[currentVideo]?.key}${autoplayQuery}`}
+              title={video[0]?.name}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </Box>
+        </Box>
+      </Box>
+
+      <Image src={url} alt="bg" w="100%" />
+    </Box>
+  );
+};
+
+const ImagePoster = ({ url, movieData, location }) => {
+  return (
+    <Box
+      display={['none', 'none', 'none', 'block']}
+    
+    >
+      <Box position="relative" w={['10rem', '12rem', '18rem', '22rem']}>
+        <Image src={url}
+       draggable="false"
+        
+        alt="poster" roundedTopLeft={5} roundedTopRight={5} />
+        {location.pathname.split('/')[2] === 'tv-show' ? (
+          <Box position="absolute" bottom="2" right="2">
+            <Text p="0 5px">TV</Text>
+          </Box>
+        ) : null}
+      </Box>
+      <Box display={['none', 'none', 'none', 'block']}>
+        <Poster />
+        <Box display={['none', 'none', 'none', 'block']}>
+          <Rating data={movieData} />
+        </Box>
+      </Box>
+    </Box>
+  );
+};

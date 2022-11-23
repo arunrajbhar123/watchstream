@@ -67,11 +67,12 @@ export default function Navbar() {
   }, [overlay]);
 
   return (
-    <>
+    <Box maxW="2000px" m="auto">
       <Box
         px={{ base: '4', lg: '4', xl: '4.7rem' }}
         position={'fixed'}
         w={'100%'}
+        maxW="2000px"
         backdropFilter="auto"
         backdropBlur="14px"
         zIndex="170"
@@ -170,7 +171,7 @@ export default function Navbar() {
                   bg="var(--ion-color-search-shade)"
                   border="none"
                   outline="none"
-                  placeholder="Search for movies or TV shows "
+                  placeholder="Search"
                   focusBorderColor={'none'}
                   onClick={e => {
                     setTimeout(() => {
@@ -188,7 +189,7 @@ export default function Navbar() {
       <Box pt={0}>
         <MainRoute />
       </Box>
-    </>
+    </Box>
   );
 }
 

@@ -27,8 +27,9 @@ import { Slider } from './Slider';
 export const Searchbox = () => {
   const location = useLocation();
   let currentsetText = '';
-  if (location.pathname?.split('/')[1] == 'query') {
-    currentsetText = location.pathname?.split('/')[2];
+  if (location.pathname?.split('/')[1] === 'query') {
+    currentsetText = location.pathname?.split('/')[2].split('%20').join(' ');
+    
   }
   const [text, setText] = useState(currentsetText);
   const { overlay, handleOverlay, setQuery } = useContext(MovieContext);
@@ -332,20 +333,7 @@ export const InputComponents = ({ text, setRecentSearh }) => {
 };
 
 const TrendingTitle = ({ handleOverlay, navigate }) => {
-  const data = [
-    'Trending',
-    'Trending',
-    'Trending',
-    'Trending',
-    'Trending dkjfnf ',
-    'Trending dkjfnf ',
-    'Trending dkjfnf ',
-    'Trending dkjfnf ',
-    'Trending dkjfnf ',
-    'Trending dkjfnf ',
-    'Trending dkjfnf ',
-    'Trending dkjfnf ',
-  ];
+  const { data } = useContext(MovieContext);
   return (
     <Box>
       <Text color="#797a7b" pt="5" pb="2">
@@ -354,27 +342,31 @@ const TrendingTitle = ({ handleOverlay, navigate }) => {
 
       <Wrap>
         {data?.map((el, index) => (
-          <WrapItem
-            alignItems="center"
-            key={index}
-            border={'1px solid grey'}
-            rounded={'7'}
-            px="2"
-            py="1"
-            cursor="pointer"
-            _hover={{
-              color: 'white',
-              border: '1px solid white',
-            }}
-            onClick={() => {
-              navigate(`/query/${el}`);
-              handleOverlay(false);
-            }}
-          >
-            <SearchIcon mr={1} color="grey" />
+          <>
+            {index <= 20 ? (
+              <WrapItem
+                alignItems="center"
+                key={index}
+                border={'1px solid grey'}
+                rounded={'7'}
+                px="2"
+                py="1"
+                cursor="pointer"
+                _hover={{
+                  color: 'white',
+                  border: '1px solid white',
+                }}
+                onClick={() => {
+                  navigate(`/query/${el?.title || el?.name}`);
+                  handleOverlay(false);
+                }}
+              >
+                <SearchIcon mr={1} color="grey" />
 
-            <Text>{el}</Text>
-          </WrapItem>
+                <Text>{el?.title || el?.name}</Text>
+              </WrapItem>
+            ) : null}
+          </>
         ))}
       </Wrap>
     </Box>

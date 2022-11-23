@@ -13,19 +13,19 @@ const Poster = () => {
       roundedBottomLeft={5}
       roundedBottomRight={5}
     >
-      <Flex onClick={handleAction} {...IconStyle}>
+      <Flex onClick={e => handleAction(e)} {...IconStyle}>
         <FaBookmark />
         <Text>Tracking</Text>
       </Flex>
-      <Flex onClick={handleAction} {...IconStyle}>
+      <Flex onClick={e => handleAction(e)} {...IconStyle}>
         <FaCheck />
         <Text>Seen All</Text>
       </Flex>
-      <Flex onClick={handleAction} {...IconStyle}>
+      <Flex onClick={e => handleAction(e)} {...IconStyle}>
         <HiThumbUp />
         <Text>Like</Text>
       </Flex>
-      <Flex {...IconStyle} onClick={handleAction}>
+      <Flex {...IconStyle} onClick={e => handleAction(e)}>
         <HiThumbDown />
         <Text>Dislike</Text>
       </Flex>

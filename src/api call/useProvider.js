@@ -8,15 +8,18 @@ const useProvider = () => {
   useEffect(() => {
     axios
       .get(
-        `https://api.themoviedb.org/3/watch/providers/movie?api_key=${process.env.REACT_APP_KEY}&language=en-US&watch_region=${country?.country_code}`
+        `https://api.themoviedb.org/3/watch/providers/movie?api_key=${
+          process.env.REACT_APP_KEY
+        }&language=en-US&watch_region=${country?.country_code?.toLowerCase()}`
       )
       .then(res => {
         setProvider(res.data.results);
+        console.log('working', res);
       })
       .catch(err => {
         console.log(err);
       });
-  }, []);
+  }, [country?.country_code]);
 
   return { provider };
 };

@@ -13,7 +13,7 @@ const Popular = () => {
   const { provider } = useProvider();
   const { country, setHighlight, handleChangeUrl } = useContext(MovieContext);
   const location = useLocation();
-  console.log(location.pathname);
+  console.log(provider);
 
   useEffect(() => {
     if (location.pathname === '/in/tv-show') {

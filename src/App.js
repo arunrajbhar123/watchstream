@@ -1,13 +1,18 @@
-import React, { useContext } from 'react';
-import { ChakraProvider, Box, theme } from '@chakra-ui/react';
+import React, { useContext, useEffect } from 'react';
+import { Box } from '@chakra-ui/react';
 import Navbar from './components/Navbar';
 import { MovieContext } from './context api/ContextProvider';
 import './root.css';
 import useUserLocation from './api call/useUserLocation';
+import { saveData } from './utils/localStorage';
 function App() {
   const { overlay, handleOverlay, handleMultiOverlay, multiOverlay } =
     useContext(MovieContext);
   const run = useUserLocation();
+  useEffect(() => {
+    saveData('chakra-ui-color-mode', 'dark');
+  }, []);
+
   return (
     <Box
       bg="var(--body-color)"
