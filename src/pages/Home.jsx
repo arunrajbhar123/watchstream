@@ -6,12 +6,9 @@ import {
   ModalContent,
   ModalBody,
   useDisclosure,
-  Spinner,
   Text,
 } from '@chakra-ui/react';
 import { useContext, useEffect } from 'react';
-import bgtitle from '../asset/bg-tiles.webp';
-import tvframe from '../asset/tv.webp';
 import { useNavigate } from 'react-router-dom';
 import { MovieContext } from './../context api/ContextProvider';
 import Loader from './../components/Loader';
@@ -28,7 +25,7 @@ const Home = () => {
   }, [country]);
 
   return (
-    <Box pt="3em" bgImage={bgtitle} h="100vh" w="100%">
+    <Box pt="3em" h="100vh" w="100%">
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -38,7 +35,7 @@ const Home = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
-      <Image src={tvframe} alt="tv" mb={'25rem'} />
+      {/* <Image src={tvframe} alt="tv" mb={'25rem'} /> */}
     </Box>
   );
 };
