@@ -43,13 +43,8 @@ export const Slider = ({
 
   return (
     <Box py="2">
-      {title !== undefined && data?.length!==0? (
-        <Text
-          className={StyleSe.unselectable}
-          py="3"
-          color="var(--ion-color-secondary)"
-          fontSize="17"
-        >
+      {title !== undefined && data?.length !== 0 ? (
+        <Text className={StyleSe.unselectable} py="3" fontSize="17">
           PEOPLE WHO LIKED {title} ALSO LIKED
         </Text>
       ) : null}
@@ -80,7 +75,7 @@ export const Slider = ({
           {data?.map((el, index) => {
             if (el[keyposter] !== null) {
               return (
-                <Fragment w="100%" key={index}>
+                <Fragment  key={index}>
                   {cast ? (
                     // <CastSlider {...el} inputImg={inputImg} index={index} />
 
@@ -277,10 +272,12 @@ const SeasonsImage = ({
       />
       <Box position="relative">
         <Box position="absolute" left="-9.5rem" bottom="0">
-          <Text w="4.3rem" bg="gray.500"
-          roundedTopRight="5"
-          px="1"
-          roundedBottomRight="5"
+          <Text
+            w="5rem"
+            bg="gray.500"
+            roundedTopRight="5"
+            px="1"
+            roundedBottomRight="5"
           >
             {el?.name}
           </Text>

@@ -14,7 +14,7 @@ import { Slider } from './../components/Slider';
 import Loader from './../components/Loader';
 import { MovieContext } from './../context api/ContextProvider';
 import useCasting from './../api call/useCasting';
-
+import styles from '../components/styles/unselectabletext.module.css';
 const Moviedetails = () => {
   const parmas = useParams();
   const { movieData } = useMovieDetails(parmas?.id);
@@ -175,7 +175,10 @@ const Moviedetails = () => {
             <Filter movieProvider={movieData?.id} />
 
             <Slider data={casting} cast={true} len={4} />
-
+            <Text className={styles.unselectable} py="1" fontSize="17">
+              SYNOPSIS
+            </Text>
+            <Text>{movieData?.overview}</Text>
             <Slider
               data={similar}
               setIsLoaderToggle={setIsLoaderToggle}
@@ -261,15 +264,15 @@ const BackGroundImgIframe = ({
 
 const ImagePoster = ({ url, movieData, location }) => {
   return (
-    <Box
-      display={['none', 'none', 'none', 'block']}
-    
-    >
+    <Box display={['none', 'none', 'none', 'block']}>
       <Box position="relative" w={['10rem', '12rem', '18rem', '22rem']}>
-        <Image src={url}
-       draggable="false"
-        
-        alt="poster" roundedTopLeft={5} roundedTopRight={5} />
+        <Image
+          src={url}
+          draggable="false"
+          alt="poster"
+          roundedTopLeft={5}
+          roundedTopRight={5}
+        />
         {location.pathname.split('/')[2] === 'tv-show' ? (
           <Box position="absolute" bottom="2" right="2">
             <Text p="0 5px">TV</Text>
