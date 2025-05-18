@@ -7,7 +7,7 @@ const useUserLocation = () => {
 
   useEffect(() => {
     axios
-      .get(`https://watchstreamlocation.vercel.app/`)
+      .get(`https://ip-location-without-db.vercel.app/`)
       .then(res => {
         setCountry(res.data);
       })
