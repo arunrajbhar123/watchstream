@@ -12,6 +12,14 @@ const useUserLocation = () => {
         setCountry(res.data);
       })
       .catch(err => {
+        setCountry({
+          success: true,
+          type: 'IPv4',
+          continent: 'Asia',
+          continent_code: 'AS',
+          country: 'India',
+          country_code: 'IN',
+        });
         console.log(err);
       });
   }, [setCountry]);
